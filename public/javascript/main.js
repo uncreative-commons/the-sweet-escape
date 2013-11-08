@@ -36,7 +36,7 @@ var CandyConvicts = {
 		var self = this;
 		console.log("### PRELOADING..");
 
-		self.game.load.spritesheet('PopWalkRight', 'images/PopWalkSprite.png', 520, 520);
+		self.game.load.spritesheet('PopWalkRight', 'images/PopWalkRightSprite.png', 200, 200);
 
 	},
 
@@ -48,9 +48,9 @@ var CandyConvicts = {
 		self.game.stage.backgroundColor = '#dddddd';
 
 		self.player = self.game.add.sprite(0, 0, 'PopWalkRight');
-		self.player.position.y = -100;
-		self.player.body.gravity.x = 8.8;
-		self.player.animations.add('right', [0,1,2,3], 10, true);
+		self.player.y = 100;
+		self.player.body.gravity.x = 0.5;
+		self.player.animations.add('right', [0,1,0,2], 8, true);
 		self.player.animations.play('right');
 
 	},
