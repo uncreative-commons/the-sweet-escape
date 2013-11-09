@@ -11,8 +11,9 @@ function room_id() {
 	return  document.location.href.split("?")[1] || "0";
 }
 
+//http://192.168.2.6
 function room_url() {
-	return  'http://192.168.2.6/?roomId=' + room_id();	
+	return  '/?roomId=' + room_id();	
 }
 var CandyConvicts = {
 
@@ -51,11 +52,9 @@ var CandyConvicts = {
 		self.game.load.image('TestBackground', 'tilemaps/background.jpg');
 		self.game.load.spritesheet('PopWalk', 'images/PopWalkSprite.png', 200, 200);
 		self.game.load.spritesheet('Boogie', 'images/BoogieSprite2.png', 132, 200);
-		self.game.load.tilemap('Room0', 'tilemaps/0.json', null, Phaser.Tilemap.TILED_JSON);
-		self.game.load.tilemap('Room1', 'tilemaps/1.json', null, Phaser.Tilemap.TILED_JSON);
-		self.game.load.tilemap('Room2', 'tilemaps/2.json', null, Phaser.Tilemap.TILED_JSON);
+		self.game.load.tilemap('Room', 'tilemaps/' + room_id() + '.json', null, Phaser.Tilemap.TILED_JSON);
+		
     	self.game.load.tileset('tiles', 'tilemaps/tileset.png', 64, 64);
-
 	},
 
 	create: function() {
@@ -67,7 +66,7 @@ var CandyConvicts = {
 
 		var background = self.game.add.sprite(0, 0, 'TestBackground');
 
-		self.currentRoom = self.game.add.tilemap('Room' + room_id());
+		self.currentRoom = self.game.add.tilemap('Room');
 		self.tileset = self.game.add.tileset('tiles');
 		self.tileset.setCollisionRange(1, 6, true, true, true, true);
 		self.tileLayer = self.game.add.tilemapLayer(0, 0, self.currentRoom.layers[0].width*self.tileset.tileWidth, self.currentRoom.layers[0].height*self.tileset.tileWidth, self.tileset, self.currentRoom, 0);
