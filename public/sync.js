@@ -113,8 +113,10 @@ watcher.prototype.message = function(evt, data) {
 	var fn = this[evt];
 
 	if (typeof fn == "function") {
-		fn.call(this, this.getEntity(data), data);
+		return fn.call(this, this.getEntity(data), data);
 	}
+	else
+		return false;
 }
 
 watcher.prototype.process_message = function(evt, data, item, id) {
@@ -124,17 +126,22 @@ watcher.prototype.process_message = function(evt, data, item, id) {
 		
 		if (evt == "destroy")
 			delete this.items[id];
-		else {
+
+		if (this.message(evt, item) == true)
+			return;
+
+		if (evt != "destroy") {
 			var that = this;
 			cdbGet(this.endpoint, id).done(function(data) {
 				var item = that.items[id];
 				
-				if (item)
+				if (item) {
+					delete item._changing;
 					that.message("update", _.extend(item, data));
+				}
 			});
 		}
-		
-		this.message(evt, item);
+
 	}
 }
 
@@ -149,6 +156,11 @@ watcher.prototype.remoteAdd = function(data) {
 }
 
 watcher.prototype.remoteSet = function(data) {
+
+	if (this.items[data._id]._changing)
+		return;
+
+	this.items[data._id]._changing = true;
 
 	var x = _.clone(data);
 	var reject = _.filter(_.keys(x), function(n) { n[0] == "_" });

@@ -44,6 +44,8 @@ var CandyConvicts = {
 		self.game.load.spritesheet('PopWalk', 'images/PopWalkSprite.png', 200, 200);
 		self.game.load.spritesheet('Boogie', 'images/BoogieSprite2.png', 132, 200);
 		self.game.load.tilemap('Room0', 'tilemaps/0.json', null, Phaser.Tilemap.TILED_JSON);
+		self.game.load.tilemap('Room1', 'tilemaps/1.json', null, Phaser.Tilemap.TILED_JSON);
+		self.game.load.tilemap('Room2', 'tilemaps/2.json', null, Phaser.Tilemap.TILED_JSON);
     	self.game.load.tileset('tiles', 'tilemaps/tileset.png', 64, 64);
 
 	},
@@ -57,7 +59,7 @@ var CandyConvicts = {
 
 		var background = self.game.add.sprite(0, 0, 'TestBackground');
 
-		self.currentRoom = self.game.add.tilemap('Room0');
+		self.currentRoom = self.game.add.tilemap('Room2');
 		self.tileset = self.game.add.tileset('tiles');
 		self.tileset.setCollisionRange(1, 6, true, true, true, true);
 		self.tileLayer = self.game.add.tilemapLayer(0, 0, self.currentRoom.layers[0].width*self.tileset.tileWidth, self.currentRoom.layers[0].height*self.tileset.tileWidth, self.tileset, self.currentRoom, 0);
@@ -65,8 +67,10 @@ var CandyConvicts = {
 		self.tileLayer.resizeWorld();
 
 
+		/*
 		self.player = new Player(self.game, 250, 50, "PopWalk", true);
 		self.game.add.existing(self.player);
+		*/
 
 /*
 		var boogie = new Player(self.game, 520, 300, "Boogie");
@@ -75,7 +79,6 @@ var CandyConvicts = {
 
 		//self.players = [boogie];
 
-		self.game.camera.follow(self.player);
 		self.cursors = self.game.input.keyboard.createCursorKeys();
 		self.jumpButton = self.game.input.keyboard.addKey(Phaser.Keyboard.X);
 
@@ -92,14 +95,25 @@ var CandyConvicts = {
 		        	this.destroy(player, data);
 		      },
 		      
+		      /*
+		      update_notify: function(player, data) {
+		      	return data._id == self.myId;
+		      },*/
+
 		      update: function(player, data) {
 		      	if (!player) {
-		      		player = self.players[data._id] = new Player(self.game, data.x, data.y, "Boogie")
+		      		player = self.players[data._id] = new Player(self.game, data.x, data.y, data.type, data._id == self.myId)
 					self.game.add.existing(player);
 		      	}
 
-		      	player.x = data.x;
-		      	player.y = data.y;
+		      	if (!player.own) {
+
+			      	player.x = data.x;
+			      	player.y = data.y;
+			      	if (player.animations.currentAnim.name != data.animation)
+		      			player.animations.play(data.animation);
+		      	}
+
 		      },
 
 		      destroy: function(player, data) {
@@ -119,6 +133,8 @@ var CandyConvicts = {
 		      }
 
 		});
+
+		self.myId = self.playersSync.remoteAdd({x: 250, y: 20, type: _.sample(["Boogie", "PopWalk"])});
 	},
 
 	update: function() {
@@ -129,24 +145,47 @@ var CandyConvicts = {
 
 		// Handling Player Movement ////////////////////////////////////////////
 
-		self.game.physics.collide(self.player, self.tileLayer);
+		var player = self.players[self.myId];
 
-		_.each(self.players, function(v) {
-			self.game.physics.collide(v, self.tileLayer);
-			self.game.physics.collide(v, self.player);
-		});
+		if (player) {
+			self.game.camera.follow(player);
+			self.game.physics.collide(player, self.tileLayer);
 
-		if (self.cursors.right.isDown || self.cursors.left.isDown) {
-			self.player.facing = (self.cursors.left.isDown) ? Phaser.LEFT : Phaser.RIGHT;
-			self.player.body.velocity.x = (self.player.facing == Phaser.LEFT) ? -500 : 500;
-			self.player.animations.play((self.player.facing == Phaser.RIGHT) ? 'right' : 'left');
-		} else {
-			self.player.body.velocity.x = 0;
-			self.player.frame = (self.player.facing == Phaser.LEFT) ? 4 : 0;
-		}
+			_.each(self.players, function(v) {
+				if (player != v) {
+					//self.game.physics.collide(v, self.tileLayer);
+					self.game.physics.collide(v, player);
+				}
+			});
 
-		if (self.jumpButton.isDown) {
-			self.player.body.velocity.y = -300;
+			if (self.cursors.right.isDown || self.cursors.left.isDown) {
+				player.facing = (self.cursors.left.isDown) ? Phaser.LEFT : Phaser.RIGHT;
+				player.body.velocity.x = (player.facing == Phaser.LEFT) ? -player.movementSpeed : player.movementSpeed;
+				player.animations.play((player.facing == Phaser.RIGHT) ? 'right' : 'left');
+			} else {
+				player.body.velocity.x = 0;
+				player.frame = (player.facing == Phaser.LEFT) ? 4 : 0;
+			}
+
+			if (self.jumpButton.isDown && player.body.touching.down && !player.jumping) {
+				player.jumping = true;
+			} 
+
+			if (player.jumping) {
+				player.body.velocity.x = (player.facing == Phaser.LEFT) ? -500 : 500;
+				player.body.velocity.y = -1000;
+				player.jumpTimer += 1;
+				if (player.jumpTimer >= 8) {
+					player.jumping = false;
+					player.body.velocity.x = 0;
+					player.body.velocity.y = 0;
+					player.jumpTimer = 0;
+				}
+
+			}
+
+			self.playersSync.remoteChange(self.myId, {x: player.x | 0, y: player.y | 0, animation: player.animations.currentAnim.name})
+
 		}
 
 	},
@@ -154,9 +193,10 @@ var CandyConvicts = {
 	render: function() {
 
 		var self = this;
-		console.log("### RENDERING..");
 
-		self.game.debug.renderCameraInfo(self.game.camera, 32, 64);
+		// console.log("### RENDERING..");
+
+		// self.game.debug.renderCameraInfo(self.game.camera, 32, 64);
 		// self.game.debug.renderRectangle(self.player.body);
 
 	}
@@ -169,6 +209,7 @@ var CandyConvicts = {
 $(function($) {
 	CandyConvicts.init($("#stageContainer"));
 	$(window).on('keyup', function(event) {
+		// console.log(event.keyCode);
 		if (event.keyCode == 32) {
 			console.log("PAUSED?");
 		}
