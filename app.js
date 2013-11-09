@@ -1,9 +1,11 @@
-var app = require('http').createServer(handler)
-var http = require('http'),
-    url = require('url'),
-    path = require('path'),
-    io = require('socket.io').listen(app)
-	fs = require('fs');
+
+var app = require('http').createServer(handler);
+var http = require('http')
+  , url = require('url')
+  , path = require('path')
+  , io = require('socket.io').listen(app)
+  , fs = require('fs');
+
 var mimeTypes = {
     "html": "text/html",
     "jpeg": "image/jpeg",
@@ -12,7 +14,7 @@ var mimeTypes = {
     "js": "text/javascript",
     "css": "text/css"};
     
-app.listen(80);
+app.listen(process.env.PORT || 80);
 
 function handler (req, res) {
   var uri = url.parse(req.url).pathname;
