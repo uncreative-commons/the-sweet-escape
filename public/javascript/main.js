@@ -11,7 +11,7 @@ function room_id() {
 	return  document.location.href.split("?")[1] || "0";
 }
 
-//http://192.168.2.6
+//http://192.168.2.64
 function room_url() {
 	return  '/?roomId=' + room_id();	
 }
@@ -166,7 +166,7 @@ var CandyConvicts = {
 				player.animations.play((player.facing == Phaser.RIGHT) ? 'idle_right' : 'idle_left');	
 			}
 
-			if (self.jumpButton.isDown && player.body.touching.down ) {
+			if ((self.jumpButton.isDown || self.cursors.up.isDown) && player.body.touching.down ) {
 				player.body.velocity.y = -500;
 			} 
 
