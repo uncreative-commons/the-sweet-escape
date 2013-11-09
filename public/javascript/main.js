@@ -64,7 +64,7 @@ var CandyConvicts = {
 			for(var i=0;i!= data.layers.length;i++){
 				var dl = data.layers[i];
 				if(dl.objects){
-					for(var =0;j!= dl.objects.length;j++){
+					for(var j=0;j!= dl.objects.length;j++){
 						self.markers.push(dl.objects[i]);
 					}
 				}
