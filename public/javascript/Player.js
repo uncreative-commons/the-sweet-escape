@@ -6,7 +6,9 @@ Player = function (game, x, y, type, own) {
 	this.y = y;
 	this.body.collideWorldBounds = true;
 	this.own = own || false;
-	
+
+	this.body.immovable = !this.own;
+
 	var self = this;
 
 	if (own) {

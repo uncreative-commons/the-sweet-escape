@@ -103,10 +103,10 @@ var CandyConvicts = {
 
 			      	player.x = data.x;
 			      	player.y = data.y;
-			      	if (player.animations.currentAnim.name != player.animation)
-		      			player.animations.play(player.animation);
+			      	if (player.animations.currentAnim.name != data.animation)
+		      			player.animations.play(data.animation);
 		      	}
-		      	
+
 		      },
 
 		      destroy: function(player, data) {
