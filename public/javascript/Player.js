@@ -4,6 +4,7 @@ Player = function (game, x, y, type, own) {
 	Phaser.Sprite.call(this, game, x, y, type);
 	this.x = x;
 	this.y = y;
+	this.movementSpeed = 600;
 	this.jumping = false;
 	this.jumpTimer = 0;
 	this.body.collideWorldBounds = true;
@@ -12,7 +13,7 @@ Player = function (game, x, y, type, own) {
 
 	if (own) {
 		self.facing = 1;
-		this.body.gravity.y = 200;
+		this.body.gravity.y = 50;
 	}
 	else {
 		self.body.allowCollision.left = self.body.allowCollision.right = false;

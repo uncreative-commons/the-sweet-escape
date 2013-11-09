@@ -59,7 +59,7 @@ var CandyConvicts = {
 
 		var background = self.game.add.sprite(0, 0, 'TestBackground');
 
-		self.currentRoom = self.game.add.tilemap('Room1');
+		self.currentRoom = self.game.add.tilemap('Room2');
 		self.tileset = self.game.add.tileset('tiles');
 		self.tileset.setCollisionRange(1, 6, true, true, true, true);
 		self.tileLayer = self.game.add.tilemapLayer(0, 0, self.currentRoom.layers[0].width*self.tileset.tileWidth, self.currentRoom.layers[0].height*self.tileset.tileWidth, self.tileset, self.currentRoom, 0);
@@ -140,7 +140,7 @@ var CandyConvicts = {
 
 		if (self.cursors.right.isDown || self.cursors.left.isDown) {
 			self.player.facing = (self.cursors.left.isDown) ? Phaser.LEFT : Phaser.RIGHT;
-			self.player.body.velocity.x = (self.player.facing == Phaser.LEFT) ? -500 : 500;
+			self.player.body.velocity.x = (self.player.facing == Phaser.LEFT) ? -self.player.movementSpeed : self.player.movementSpeed;
 			self.player.animations.play((self.player.facing == Phaser.RIGHT) ? 'right' : 'left');
 		} else {
 			self.player.body.velocity.x = 0;
@@ -152,8 +152,8 @@ var CandyConvicts = {
 		} 
 
 		if (self.player.jumping) {
-			self.player.body.velocity.x = (self.player.facing == Phaser.LEFT) ? -1500 : 1500;
-			self.player.body.velocity.y = -1500;
+			self.player.body.velocity.x = (self.player.facing == Phaser.LEFT) ? -500 : 500;
+			self.player.body.velocity.y = -1000;
 			self.player.jumpTimer += 1;
 			if (self.player.jumpTimer >= 8) {
 				self.player.jumping = false;
