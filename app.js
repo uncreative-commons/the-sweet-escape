@@ -1,19 +1,54 @@
 var app = require('http').createServer(handler)
-  , io = require('socket.io').listen(app)
-  , fs = require('fs')
-
+var http = require('http'),
+    url = require('url'),
+    path = require('path'),
+    io = require('socket.io').listen(app)
+	fs = require('fs');
+var mimeTypes = {
+    "html": "text/html",
+    "jpeg": "image/jpeg",
+    "jpg": "image/jpeg",
+    "png": "image/png",
+    "js": "text/javascript",
+    "css": "text/css"};
+    
 app.listen(80);
-function handler (req, res) {
-  fs.readFile(__dirname + '/public/test.html',
-  function (err, data) {
-    if (err) {
-      res.writeHead(500);
-      return res.end('Error loading index.html');
-    }
 
-    res.writeHead(200);
-    res.end(data);
-  });
+function handler (req, res) {
+  var uri = url.parse(req.url).pathname;
+  var filename = path.join(process.cwd()+"/public", unescape(uri));
+  var stats;
+
+  try {
+    stats = fs.lstatSync(filename); // throws if path doesn't exist
+  } catch (e) {
+    res.writeHead(404, {'Content-Type': 'text/plain'});
+    res.write('404 Not Found\n');
+    res.end();
+    return;
+  }
+
+
+  if (stats.isFile()) {
+    // path exists, is a file
+    var mimeType = mimeTypes[path.extname(filename).split(".")[1]];
+    res.writeHead(200, {'Content-Type': mimeType} );
+
+    var fileStream = fs.createReadStream(filename);
+    fileStream.pipe(res);
+  } else if (stats.isDirectory()) {
+    // path exists, is a directory
+    res.writeHead(200, {'Content-Type': 'text/plain'});
+    res.write('Index of '+uri+'\n');
+    res.write('TODO, show index?\n');
+    res.end();
+  } else {
+    // Symbolic link, other?
+    // TODO: follow symlinks?  security?
+    res.writeHead(500, {'Content-Type': 'text/plain'});
+    res.write('500 Internal server error\n');
+    res.end();
+  }
 }
 var Rooms = {};
 io.sockets.on('connection', function (socket) {
@@ -23,8 +58,8 @@ io.sockets.on('connection', function (socket) {
   var room = Rooms[roomId];
   var sid = socket.id;
   room[sid]={};
-  socket.emit('state', room);
   socket.emit('whoami', sid);
+  socket.emit('state', room);
   socket.on('change', function (data) {
     var t = {};
 	t[sid] = data;
@@ -38,7 +73,7 @@ io.sockets.on('connection', function (socket) {
   socket.on('disconnect', function (data) {
     delete room[sid];
     for(i in room){
-		io.sockets.socket(i).emit("state",room);
+		io.sockets.socket(i).emit("remove",sid);
 	}
   });
 });
