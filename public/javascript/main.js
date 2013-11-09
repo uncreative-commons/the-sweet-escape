@@ -64,35 +64,61 @@ var CandyConvicts = {
 		self.tileLayer.fixedToCamera = false;
 		self.tileLayer.resizeWorld();
 
-		self.player = self.game.add.sprite(0, 0, 'PopWalk');
-		self.player.x = 250;
-		self.player.y = 50;
-		self.player.facing = 1;
-		self.player.body.width = 80;
-		self.player.body.offset.x = 70;
-		self.player.body.offset.y = 100;
-		self.player.body.height = 100;
-		self.player.body.gravity.y = 200;
-		self.player.body.collideWorldBounds = true;
-		self.player.animations.add('idle', [0]);
-		self.player.animations.add('right', [0,1,0,2], 8, true);
-		self.player.animations.add('left', [3,4,3,5], 8, true);
-		self.player.animations.play('idle');
 
+		self.player = new Player(self.game, 250, 50, "PopWalk", true);
+		self.game.add.existing(self.player);
+
+/*
 		var boogie = new Player(self.game, 520, 300, "Boogie");
-		boogie.animations.add('idle', [0]);
-		boogie.animations.add('right', [0,1,0,2], 8, true);
-		boogie.animations.add('left', [3,4,3,5], 8, true);
-		boogie.animations.play('right');
-		boogie.body.allowCollision.left = boogie.body.allowCollision.right = false;
 		self.game.add.existing(boogie);
+		*/
 
-		self.players = [boogie];
+		//self.players = [boogie];
 
 		self.game.camera.follow(self.player);
 		self.cursors = self.game.input.keyboard.createCursorKeys();
 		self.jumpButton = self.game.input.keyboard.addKey(Phaser.Keyboard.X);
 
+		self.players={};
+		self.playersSync = new watcher({
+		      endpoint: "arena",
+
+		      getEntity: function (data) {
+		      	return self.players[data._id];
+		        //return $('[data-uid="' + data._id + '"]');
+		      },
+		      create: function(player, data) {
+		      	if (player)
+		        	this.destroy(player, data);
+		      },
+		      
+		      update: function(player, data) {
+		      	if (!player) {
+		      		player = self.players[data._id] = new Player(self.game, data.x, data.y, "Boogie")
+					self.game.add.existing(player);
+		      	}
+
+		      	player.x = data.x;
+		      	player.y = data.y;
+		      },
+
+		      destroy: function(player, data) {
+		        if (player) {
+		        	//self.game.remove(player)
+		        	player.kill();
+
+					if (player.group)
+					{
+					   player.group.remove(player);
+					}
+					else if (player.parent)
+					{
+					   player.parent.removeChild(player);
+					}
+		        }
+		      }
+
+		});
 	},
 
 	update: function() {
@@ -105,10 +131,10 @@ var CandyConvicts = {
 
 		self.game.physics.collide(self.player, self.tileLayer);
 
-		for (p in self.players) {
-			self.game.physics.collide(self.players[p], self.tileLayer);
-			self.game.physics.collide(self.players[p], self.player);
-		}
+		_.each(self.players, function(v) {
+			self.game.physics.collide(v, self.tileLayer);
+			self.game.physics.collide(v, self.player);
+		});
 
 		if (self.cursors.right.isDown || self.cursors.left.isDown) {
 			self.player.facing = (self.cursors.left.isDown) ? Phaser.LEFT : Phaser.RIGHT;
