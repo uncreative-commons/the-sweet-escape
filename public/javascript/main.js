@@ -15,6 +15,8 @@ function room_id() {
 function room_url() {
 	return  '/?roomId=' + room_id();	
 }
+var main;
+
 var CandyConvicts = {
 
 	container: {},
@@ -38,7 +40,7 @@ var CandyConvicts = {
 				preload: self.preload,
 				create:  self.create,
 				update:  self.update,
-				render:  self.render
+				render:  self.render,
 			}
 		);
 
@@ -60,6 +62,8 @@ var CandyConvicts = {
 	create: function() {
 
 		var self = this;
+		main = this;
+		
 		console.log("### GAME CREATED!");
 
 		// self.game.stage.backgroundColor = '#F8CA00';
