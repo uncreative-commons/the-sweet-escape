@@ -10,6 +10,56 @@
          "width":26,
          "x":0,
          "y":0
+        }, 
+        {
+         "height":12,
+         "name":"water",
+         "objects":[
+                {
+                 "height":216,
+                 "name":"water",
+                 "properties":
+                    {
+
+                    },
+                 "type":"",
+                 "visible":true,
+                 "width":251,
+                 "x":962,
+                 "y":566
+                }, 
+                {
+                 "height":379,
+                 "name":"prev",
+                 "properties":
+                    {
+
+                    },
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":1,
+                 "y":130
+                }, 
+                {
+                 "height":383,
+                 "name":"next",
+                 "properties":
+                    {
+
+                    },
+                 "type":"",
+                 "visible":true,
+                 "width":66,
+                 "x":1600,
+                 "y":128
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "width":26,
+         "x":0,
+         "y":0
         }],
  "orientation":"orthogonal",
  "properties":
@@ -20,7 +70,7 @@
  "tilesets":[
         {
          "firstgid":1,
-         "image":"./tileset.png",
+         "image":"tileset.png",
          "imageheight":64,
          "imagewidth":448,
          "margin":0,

@@ -10,6 +10,82 @@
          "width":26,
          "x":0,
          "y":0
+        }, 
+        {
+         "height":12,
+         "name":"water",
+         "objects":[
+                {
+                 "height":191,
+                 "name":"water",
+                 "properties":
+                    {
+
+                    },
+                 "type":"",
+                 "visible":true,
+                 "width":127,
+                 "x":576,
+                 "y":569
+                }, 
+                {
+                 "height":190,
+                 "name":"water",
+                 "properties":
+                    {
+
+                    },
+                 "type":"",
+                 "visible":true,
+                 "width":126,
+                 "x":769,
+                 "y":566
+                }, 
+                {
+                 "height":196,
+                 "name":"water",
+                 "properties":
+                    {
+
+                    },
+                 "type":"",
+                 "visible":true,
+                 "width":321,
+                 "x":959,
+                 "y":571
+                }, 
+                {
+                 "height":381,
+                 "name":"prev",
+                 "properties":
+                    {
+
+                    },
+                 "type":"",
+                 "visible":true,
+                 "width":63,
+                 "x":0,
+                 "y":128
+                }, 
+                {
+                 "height":379,
+                 "name":"next",
+                 "properties":
+                    {
+
+                    },
+                 "type":"",
+                 "visible":true,
+                 "width":68,
+                 "x":1600,
+                 "y":130
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "width":26,
+         "x":0,
+         "y":0
         }],
  "orientation":"orthogonal",
  "properties":
@@ -20,7 +96,7 @@
  "tilesets":[
         {
          "firstgid":1,
-         "image":"./tileset.png",
+         "image":"tileset.png",
          "imageheight":64,
          "imagewidth":448,
          "margin":0,
