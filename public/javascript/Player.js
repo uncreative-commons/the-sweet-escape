@@ -5,7 +5,7 @@ Player = function (game, x, y, type, own) {
 	this.playerType = type;
 	this.x = x;
 	this.y = y;
-	this.movementSpeed = 600;
+	this.movementSpeed = 300;
 	this.jumping = false;
 	this.jumpTimer = 0;
 	this.body.collideWorldBounds = true;
@@ -24,12 +24,12 @@ Player = function (game, x, y, type, own) {
 	}
 
 	switch(type) {
+
 		case "Boogie":
-			//new Player(self.game, 520, 300, "Boogie");
-			self.animations.add('idle', [0]);
+			self.animations.add('idle_right', [1]);
+			self.animations.add('idle_left', [4]);
 			self.animations.add('right', [0,1,0,2], 8, true);
 			self.animations.add('left', [3,4,3,5], 8, true);
-			self.animations.play('right');
 			break;
 
 		case "PopWalk":
@@ -39,12 +39,16 @@ Player = function (game, x, y, type, own) {
 			self.body.height = 100;
 
 			self.body.collideWorldBounds = true;
-			self.animations.add('idle', [0]);
+			self.animations.add('idle_right', [1]);
+			self.animations.add('idle_left', [4]);
+
 			self.animations.add('right', [0,1,0,2], 8, true);
 			self.animations.add('left', [3,4,3,5], 8, true);
 			self.animations.play('idle');
 			break;
 	}
+
+	self.animations.play('idle_right');
 };
 
 Player.prototype = Object.create(Phaser.Sprite.prototype);
