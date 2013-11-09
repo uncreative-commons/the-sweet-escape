@@ -93,6 +93,11 @@ var CandyConvicts = {
 		        	this.destroy(player, data);
 		      },
 		      
+		      /*
+		      update_notify: function(player, data) {
+		      	return data._id == self.myId;
+		      },*/
+
 		      update: function(player, data) {
 		      	if (!player) {
 		      		player = self.players[data._id] = new Player(self.game, data.x, data.y, data.type, data._id == self.myId)
@@ -166,7 +171,7 @@ var CandyConvicts = {
 				player.body.velocity.y = -300;
 			}
 
-			self.playersSync.remoteChange(self.myId, {x: player.x, y: player.y, animation: player.animations.currentAnim.name})
+			self.playersSync.remoteChange(self.myId, {x: player.x | 0, y: player.y | 0, animation: player.animations.currentAnim.name})
 		}
 
 	},
