@@ -1,40 +1,13 @@
 var hasEventSource = !!window.EventSource;
 
-$.couch.urlPrefix = "http://192.168.2.6:5984";
+urlPrefix = "http://192.168.2.6:5984";
 
 if (!hasEventSource)
 	alert("Needs event source");
 
-/*
-var es = new EventSource($.couch.urlPrefix + "/level/_changes?feed=eventsource&since=now");
-
-es.addEventListener('message', function(e) {
-	
-	var data = JSON.parse(e.data);
-
-	var sel = '[data-uid="' + data.id + '"]';
-
-	if (data.deleted) {
-		$( sel ).remove();
-	} else {
-		if ($( sel ).length == 0) {
-			$( "#layers" ).append(createMenu({_id: data.id, title: "loading ..."}));
-		}
-		cdbGet("level", data.id).done(function(data) {
-			var $el = $( sel );
-			
-			$el.find(".label").text(data.title);
-			$el.attr("data-rev", data._rev);
-		})
-	}
-
-	console.log(data);
-}, false);
-*/
-
 function cq(path) {
 	return $.ajax({
-		url: $.couch.urlPrefix + "/" + path,
+		url: urlPrefix + "/" + path,
 
 	})
 }
@@ -57,7 +30,7 @@ function cq( path, postData, action) {
 		action = "PUT";
 	
 	return $.ajax({
-	    url: $.couch.urlPrefix  + "/" + path,
+	    url: urlPrefix  + "/" + path,
 	    cache: false,
 	    type: action,
 	    data: postData?JSON.stringify(postData):undefined,
@@ -108,7 +81,7 @@ function watcher(cfg) {
 	
 	var that = this;
 	
-	var es = new EventSource($.couch.urlPrefix + "/" + that.endpoint + "/_changes?feed=eventsource&since=now");
+	var es = new EventSource(urlPrefix + "/" + that.endpoint + "/_changes?feed=eventsource&since=now");
 
 	es.addEventListener('message', function(e) {
 		
@@ -126,9 +99,9 @@ function watcher(cfg) {
 		console.log(data);
 	}, false);
 
-	cdbList("level").done(function(data) {
+	cdbList(that.endpoint).done(function(data) {
 		_.each(data, function(v, k) {
-			cdbGet("level", v.id).done(function(data) {
+			cdbGet(that.endpoint, v.id).done(function(data) {
 				that.process_message("create", data, data, data._id);
 			});
 		});
