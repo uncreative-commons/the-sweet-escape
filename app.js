@@ -62,6 +62,7 @@ io.sockets.on('connection', function (socket) {
   socket.emit('whoami', sid);
   socket.emit('state', room);
   socket.on('change', function (data) {
+	console.log(room);
     var t = {};
 	t[sid] = data;
 	room[sid] = data;
