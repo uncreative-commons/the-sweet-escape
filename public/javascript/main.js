@@ -56,6 +56,10 @@ var CandyConvicts = {
 		self.player.animations.add('right', [0,1,0,2], 8, true);
 		self.player.animations.play('idle');
 
+		var secondPop = new Player(self.game, 0, 300, "PopWalkRight");
+		secondPop.animations.play('right');
+		self.game.add.existing(secondPop);
+
 		self.game.camera.follow(self.player);
 		self.cursors = self.game.input.keyboard.createCursorKeys();
 		self.jumpButton = self.game.input.keyboard.addKey(Phaser.Keyboard.X);
