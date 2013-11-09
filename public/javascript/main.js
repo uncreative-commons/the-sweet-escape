@@ -64,7 +64,6 @@ var CandyConvicts = {
 		self.player.x = 250;
 		self.player.y = 50;
 		self.player.facing = 1;
-		self.player.body.bounce.y = 0.2;
 		self.player.body.gravity.y = 200;
 		self.player.body.collideWorldBounds = true;
 		self.player.animations.add('idle', [0]);
@@ -72,20 +71,15 @@ var CandyConvicts = {
 		self.player.animations.add('left', [3,4,3,5], 8, true);
 		self.player.animations.play('idle');
 
-		var secondPop = new Player(self.game, 0, 300, "PopWalk");
-		secondPop.animations.add('idle', [0]);
-		secondPop.animations.add('right', [0,1,0,2], 8, true);
-		// secondPop.animations.play('right');
-		self.game.add.existing(secondPop);
-
 		var boogie = new Player(self.game, 520, 300, "Boogie");
 		boogie.animations.add('idle', [0]);
 		boogie.animations.add('right', [0,1,0,2], 8, true);
 		boogie.animations.add('left', [3,4,3,5], 8, true);
 		boogie.animations.play('right');
+		boogie.body.allowCollision.left = boogie.body.allowCollision.right = false;
 		self.game.add.existing(boogie);
 
-		self.players = [secondPop, boogie];
+		self.players = [boogie];
 
 		self.game.camera.follow(self.player);
 		self.cursors = self.game.input.keyboard.createCursorKeys();
@@ -105,6 +99,7 @@ var CandyConvicts = {
 
 		for (p in self.players) {
 			self.game.physics.collide(self.players[p], self.tileLayer);
+			self.game.physics.collide(self.players[p], self.player);
 		}
 
 		if (self.cursors.right.isDown || self.cursors.left.isDown) {
