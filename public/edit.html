@@ -20,7 +20,6 @@
 <script src="sync.js"></script>
 
 <script>
-
   $.fn.prepareMenu = function ($el) {
     this.addClass( "ui-corner-all" );
     this.prepend( "<div class='control handle'><span class='ui-icon ui-icon-carat-2-n-s'></span></div>" );
@@ -43,17 +42,47 @@
   
   $(function() {
     
+
+    var levels = new watcher({
+      endpoint: "level",
+
+      getEntity: function (data) {
+        return $('[data-uid="' + data._id + '"]');
+      },
+      create: function($el, data) {
+        $el.remove();
+        $( "#layers" ).append(createMenu({_id: data._id, title: "loading ..."}));
+      },
+      
+      update: function($el, data) {
+        $el.find(".label").text(data.title);
+        $el.attr("data-rev", data._rev);
+      },
+
+      destroy: function($el, data) {
+        $el.remove();
+      }
+
+    });
+
+    /*
     $( "#addLayer #template" ).draggable({
       connectToSortable: "#layers",
       helper: "clone",
       revert: "invalid"
     }).prepareMenu();
+    */
+
+    $( "#addLayer #template" ).on("click", function() {
+      levels.remoteAdd({title: "New " + ((Math.random()*1000) | 0) })
+    });
   
     
     $( "#layers" )
     .sortable({ 
       handle: ".handle",
       stop: function(e, ui) {
+        /*
         console.log(e, ui);
         $el = $(ui.item);
         if ($el.attr("data-uid")) {
@@ -62,6 +91,7 @@
           var x=cdbNew("level", "layer", {title: "type something"});
           $el.attr("data-uid", x.uid);
         }
+        */
 
         //ui.item
 
@@ -76,9 +106,10 @@
      })
      .on("click", ".delete", function() {
         var $el = $( this ).closest("li");
-        var data = $el.attr("data-uid") + "?rev=" + $el.attr("data-rev");
-        cdbDelete("level", data);
-        $el.remove();
+        levels.remoteDelete($el.attr("data-uid"));// + "?rev=" + $el.attr("data-rev"))
+        //var data = $el.attr("data-uid") + "?rev=" + $el.attr("data-rev");
+        //cdbDelete("level", data);
+        //$el.remove();
      })
      .on("dblclick", "li", function() {
       var $el = $( this ).closest("li").find('.label');
@@ -88,7 +119,8 @@
             if (data.content) {
               var $el = data.$el.closest("li");
               var uidrev = $el.attr("data-uid") + "?rev=" + $el.attr("data-rev");
-              cdbSet("level", uidrev,{ title: data.content } );
+              //cdbSet("level", uidrev,{ title: data.content } );
+              levels.remoteChange($el.attr("data-uid"), { title: data.content })
             }
           }
         });
@@ -96,17 +128,6 @@
      })
     .find( "li" )
     .prepareMenu()
-  });
-
-  cdbList("level").done(function(data) {
-    
-    _.each(data, function(v, k) {
-      cdbGet("level", v.id).done(function(data) {
-        var menu = createMenu(data);
-        
-        $( "#layers" ).append(menu);
-      });
-    });
   });
   
 </script>
