@@ -40,8 +40,9 @@ var CandyConvicts = {
 		var self = this;
 		console.log("### PRELOADING..");
 
+		self.game.load.image('TestBackground', 'tilemaps/background.jpg');
 		self.game.load.spritesheet('PopWalk', 'images/PopWalkSprite.png', 200, 200);
-		self.game.load.spritesheet('Boogie', 'images/BoogieSprite.png', 125, 200);
+		self.game.load.spritesheet('Boogie', 'images/BoogieSprite2.png', 132, 200);
 		self.game.load.tilemap('Room0', 'tilemaps/0.json', null, Phaser.Tilemap.TILED_JSON);
     	self.game.load.tileset('tiles', 'tilemaps/tileset.png', 64, 64);
 
@@ -53,9 +54,12 @@ var CandyConvicts = {
 		console.log("### GAME CREATED!");
 
 		// self.game.stage.backgroundColor = '#F8CA00';
+
+		var background = self.game.add.sprite(0, 0, 'TestBackground');
+
 		self.currentRoom = self.game.add.tilemap('Room0');
 		self.tileset = self.game.add.tileset('tiles');
-		self.tileset.setCollisionRange(1, 3, true, true, true, true);
+		self.tileset.setCollisionRange(1, 6, true, true, true, true);
 		self.tileLayer = self.game.add.tilemapLayer(0, 0, self.currentRoom.layers[0].width*self.tileset.tileWidth, self.currentRoom.layers[0].height*self.tileset.tileWidth, self.tileset, self.currentRoom, 0);
 		self.tileLayer.fixedToCamera = false;
 		self.tileLayer.resizeWorld();
