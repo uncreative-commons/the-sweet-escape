@@ -4,6 +4,9 @@ Player = function (game, x, y, type, own) {
 	Phaser.Sprite.call(this, game, x, y, type);
 	this.x = x;
 	this.y = y;
+	this.movementSpeed = 600;
+	this.jumping = false;
+	this.jumpTimer = 0;
 	this.body.collideWorldBounds = true;
 	this.own = own || false;
 
@@ -13,7 +16,7 @@ Player = function (game, x, y, type, own) {
 
 	if (own) {
 		self.facing = 1;
-		this.body.gravity.y = 200;
+		this.body.gravity.y = 50;
 	}
 	else {
 		self.body.allowCollision.left = self.body.allowCollision.right = false;
@@ -31,7 +34,7 @@ Player = function (game, x, y, type, own) {
 		case "PopWalk":
 			self.body.width = 80;
 			self.body.offset.x = 70;
-			self.body.offset.y = 100;
+			self.body.offset.y = 98;
 			self.body.height = 100;
 
 			self.body.collideWorldBounds = true;
