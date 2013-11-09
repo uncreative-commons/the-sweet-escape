@@ -1,5 +1,5 @@
 {
-    "name": "The Sweet Escape",
+    "name": "sweet_mcqueen",
     "description": "The Sweet Escape - Hellenic Game Jam 2013 Entry by Uncreative Commons",
     "version": "0.0.1",
     "main": "app.js",
@@ -7,7 +7,6 @@
         "start": "node app.js"
     },
     "dependencies": {
-        // "node-static": "*",
         "socket.io": "*"
     }
 }
