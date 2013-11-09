@@ -167,22 +167,9 @@ var CandyConvicts = {
 				player.animations.play((player.facing == Phaser.RIGHT) ? 'idle_right' : 'idle_left');	
 			}
 
-			if (self.jumpButton.isDown && player.body.touching.down && !player.jumping) {
-				player.jumping = true;
+			if (self.jumpButton.isDown && player.body.touching.down ) {
+				player.body.velocity.y = -500;
 			} 
-
-			if (player.jumping) {
-				player.body.velocity.x = (player.facing == Phaser.LEFT) ? -500 : 500;
-				player.body.velocity.y = -1000;
-				player.jumpTimer += 1;
-				if (player.jumpTimer >= 8) {
-					player.jumping = false;
-					player.body.velocity.x = 0;
-					player.body.velocity.y = 0;
-					player.jumpTimer = 0;
-				}
-
-			}
 
 			var datum = {x: player.x | 0, y: player.y | 0, animation: player.animations.currentAnim.name, type: player.playerType};
 			if (!_.isEqual(datum, self.old_emit))

@@ -17,7 +17,7 @@ Player = function (game, x, y, type, own) {
 
 	if (own) {
 		self.facing = 1;
-		this.body.gravity.y = 50;
+		this.body.gravity.y = 20;
 	}
 	else {
 		self.body.allowCollision.left = self.body.allowCollision.right = false;
