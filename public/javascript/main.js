@@ -6,8 +6,14 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-var room_id = 'http://192.168.2.6/?roomId=3';
 
+function room_id() {
+	return  document.location.href.split("?")[1] || "0";
+}
+
+function room_url() {
+	return  'http://192.168.2.6/?roomId=' + room_id();	
+}
 var CandyConvicts = {
 
 	container: {},
@@ -61,7 +67,7 @@ var CandyConvicts = {
 
 		var background = self.game.add.sprite(0, 0, 'TestBackground');
 
-		self.currentRoom = self.game.add.tilemap('Room2');
+		self.currentRoom = self.game.add.tilemap('Room' + room_id());
 		self.tileset = self.game.add.tileset('tiles');
 		self.tileset.setCollisionRange(1, 6, true, true, true, true);
 		self.tileLayer = self.game.add.tilemapLayer(0, 0, self.currentRoom.layers[0].width*self.tileset.tileWidth, self.currentRoom.layers[0].height*self.tileset.tileWidth, self.tileset, self.currentRoom, 0);
@@ -74,7 +80,7 @@ var CandyConvicts = {
 
 		self.players={};
 
-		var socket = self.socket = io.connect(room_id);
+		var socket = self.socket = io.connect(room_url());
 
 		socket.on('whoami', function (id) {
 			self.myId = id;
@@ -158,7 +164,7 @@ var CandyConvicts = {
 			} else {
 				player.body.velocity.x = 0;
 
-				player.animations.play((player.facing == Phaser.RIGHT) ? 'idle_right' : 'idle_left');
+				player.animations.play((player.facing == Phaser.RIGHT) ? 'idle_right' : 'idle_left');	
 			}
 
 			if (self.jumpButton.isDown && player.body.touching.down && !player.jumping) {
