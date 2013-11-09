@@ -29,8 +29,16 @@
     return this;
   }
 
-  function createMenu() {
-    return $('<li id="template" class="ui-state-highlight"><span class="label">New Layer</span></li>').prepareMenu();
+  function createMenu(data) {
+    var $el = $('<li id="template" class="ui-state-highlight"><span class="label">New Layer</span></li>').prepareMenu();
+    
+    if (data) {
+      $el.find(".label").text(data.title);
+      $el.attr("data-uid", data._id);
+      $el.attr("data-rev", data._rev);
+    }
+
+    return $el;
   }
   
   $(function() {
@@ -47,6 +55,16 @@
       handle: ".handle",
       stop: function(e, ui) {
         console.log(e, ui);
+        $el = $(ui.item);
+        if ($el.attr("data-uid")) {
+          var data = $el.attr("data-uid") + "?rev=" + $el.attr("data-rev");
+        } else {
+          var x=cdbNew("level", "layer", {title: "type something"});
+          $el.attr("data-uid", x.uid);
+        }
+
+        //ui.item
+
       }
     })
     .selectable({
@@ -84,11 +102,8 @@
     
     _.each(data, function(v, k) {
       cdbGet("level", v.id).done(function(data) {
-        var menu = createMenu();
-        console.log(data);
-        menu.find(".label").text(data.title);
-        menu.attr("data-uid", data._id);
-        menu.attr("data-rev", data._rev);
+        var menu = createMenu(data);
+        
         $( "#layers" ).append(menu);
       });
     });

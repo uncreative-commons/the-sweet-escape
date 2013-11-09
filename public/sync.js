@@ -5,7 +5,7 @@ $.couch.urlPrefix = "http://192.168.2.6:5984";
 if (!hasEventSource)
 	alert("Needs event source");
 
-var es = new EventSource($.couch.urlPrefix + "/level/_changes?feed=eventsource");
+var es = new EventSource($.couch.urlPrefix + "/level/_changes?feed=eventsource&since=now");
 
 es.addEventListener('message', function(e) {
 	
@@ -16,8 +16,14 @@ es.addEventListener('message', function(e) {
 	if (data.deleted) {
 		$( sel ).remove();
 	} else {
+		if ($( sel ).length == 0) {
+			$( "#layers" ).append(createMenu({_id: data.id, title: "loading ..."}));
+		}
 		cdbGet("level", data.id).done(function(data) {
-			$( sel ).find(".label").text(data.title);
+			var $el = $( sel );
+			
+			$el.find(".label").text(data.title);
+			$el.attr("data-rev", data._rev);
 		})
 	}
 
@@ -65,7 +71,10 @@ function cq( path, postData, action) {
 
 
 function cdbNew(where, type, obj) {
-	return cq(where + "/" + cuid(type), obj, "PUT");
+	var uid = cuid(type);
+	var rv = cq(where + "/" + uid, obj, "PUT");
+	rv.uid = uid;
+	return rv;
 }
 
 function cdbSet(where, uid, obj) {
