@@ -47,6 +47,7 @@ var CandyConvicts = {
 		self.game.load.tilemap('Room1', 'tilemaps/1.json', null, Phaser.Tilemap.TILED_JSON);
 		self.game.load.tilemap('Room2', 'tilemaps/2.json', null, Phaser.Tilemap.TILED_JSON);
     	self.game.load.tileset('tiles', 'tilemaps/tileset.png', 64, 64);
+    	self.game.load.audio('music', 'audio/two.mp3');
 
 	},
 
@@ -66,6 +67,8 @@ var CandyConvicts = {
 		self.tileLayer.fixedToCamera = false;
 		self.tileLayer.resizeWorld();
 
+		self.music = game.add.audio('music');
+	    self.music.play();
 
 		/*
 		self.player = new Player(self.game, 250, 50, "PopWalk", true);
