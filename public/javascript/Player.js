@@ -1,3 +1,17 @@
+Marker = function (game, x, y, width,height){
+	Phaser.Sprite.call(this, game, x, y,"Boogie");
+	this.body.x = x;
+	this.body.y = y;
+	this.body.width = width;
+	this.body.height = height;
+	this.body.collideWorldBounds = false;
+	this.body.immovable = true;
+	this.body.allowCollision.left = this.body.allowCollision.right = this.body.allowCollision.top = this.body.allowCollision.bottom = false;
+	
+};
+
+Marker.prototype = Object.create(Phaser.Sprite.prototype);
+Marker.prototype.constructor = Marker;
 
 Player = function (game, x, y, type, own) {
 	

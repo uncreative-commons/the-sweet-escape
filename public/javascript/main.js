@@ -23,7 +23,7 @@ var CandyConvicts = {
 	game: {},
 	player: {},
 	cursors: {},
-
+	markers:{},
 	floor: {},
 
 	preinit: function(container) {
@@ -43,8 +43,19 @@ var CandyConvicts = {
 
 
 	preload: function() {
-
 		var self = this;
+		$.getJSON('tilemaps/' + room_id() + '.json',function(data){
+			for(var i=0;i!= data.layers.length;i++){
+				var dl = data.layers[i];
+				if(dl.objects){
+					for(var =0;j!= dl.objects.length;j++){
+						self.markers.push(dl.objects[i]);
+					}
+				}
+			}
+			console.log(self.markers);
+		})
+		
 		console.log("### PRELOADING..");
 
 		self.game.load.image('TestBackground', 'tilemaps/background.jpg');
