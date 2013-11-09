@@ -2,9 +2,22 @@
 <html>
 <head>
 <title>leveledit</title>
+
+<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
+
 <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+
 <script src="http://codeorigin.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
 <script src="libs/jquery.editable.min.js"></script>
+
+<script type="text/javascript" src="http://192.168.2.6:5984/_utils/script/json2.js"></script>
+<script type="text/javascript" src="http://192.168.2.6:5984/_utils/script/sha1.js"></script>
+<script type="text/javascript" src="http://192.168.2.6:5984/_utils/script/jquery.couch.js"></script>
+
+
+
+<script src="sync.js"></script>
 
 <script>
 
@@ -15,9 +28,12 @@
     
     return this;
   }
+
+  function createMenu() {
+    return $('<li id="template" class="ui-state-highlight"><span class="label">New Layer</span></li>').prepareMenu();
+  }
   
   $(function() {
-    
     
     $( "#addLayer #template" ).draggable({
       connectToSortable: "#layers",
@@ -27,7 +43,12 @@
   
     
     $( "#layers" )
-    .sortable({ handle: ".handle" })
+    .sortable({ 
+      handle: ".handle",
+      stop: function(e, ui) {
+        console.log(e, ui);
+      }
+    })
     .selectable({
       filter: "li", 
       cancel: ".control",
@@ -36,16 +57,41 @@
       },
      })
      .on("click", ".delete", function() {
-        $( this ).closest("li").remove();
+        var $el = $( this ).closest("li");
+        var data = $el.attr("data-uid") + "?rev=" + $el.attr("data-rev");
+        cdbDelete("level", data);
+        $el.remove();
      })
      .on("dblclick", "li", function() {
       var $el = $( this ).closest("li").find('.label');
       if (!$el.is(':editable'))
-        $el.editable();
+        $el.editable({
+          callback: function (data) {
+            if (data.content) {
+              var $el = data.$el.closest("li");
+              var uidrev = $el.attr("data-uid") + "?rev=" + $el.attr("data-rev");
+              cdbSet("level", uidrev,{ title: data.content } );
+            }
+          }
+        });
       $el.editable('open');
      })
     .find( "li" )
     .prepareMenu()
+  });
+
+  cdbList("level").done(function(data) {
+    
+    _.each(data, function(v, k) {
+      cdbGet("level", v.id).done(function(data) {
+        var menu = createMenu();
+        console.log(data);
+        menu.find(".label").text(data.title);
+        menu.attr("data-uid", data._id);
+        menu.attr("data-rev", data._rev);
+        $( "#layers" ).append(menu);
+      });
+    });
   });
   
 </script>
