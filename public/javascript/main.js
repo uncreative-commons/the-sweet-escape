@@ -69,18 +69,6 @@ var CandyConvicts = {
 		self.tileLayer.resizeWorld();
 
 
-		/*
-		self.player = new Player(self.game, 250, 50, "PopWalk", true);
-		self.game.add.existing(self.player);
-		*/
-
-/*
-		var boogie = new Player(self.game, 520, 300, "Boogie");
-		self.game.add.existing(boogie);
-		*/
-
-		//self.players = [boogie];
-
 		self.cursors = self.game.input.keyboard.createCursorKeys();
 		self.jumpButton = self.game.input.keyboard.addKey(Phaser.Keyboard.X);
 
@@ -92,10 +80,10 @@ var CandyConvicts = {
 			self.myId = id;
 			console.log("i am", self.myId);
 
-			var datum = {x: 250, y: 20, type: _.sample(["Boogie", "PopWalk"])};
-			socket.emit("change", datum);
+			var datum = {x: 250, y: 80, type: _.sample(["Boogie", "PopWalk"])};
 
 			var player = self.players[id] = new Player(self.game, datum.x, datum.y, datum.type, true);
+
 			self.game.add.existing(player);
 			self.game.camera.follow(player);
 		});
@@ -130,7 +118,6 @@ var CandyConvicts = {
 		socket.on('remove', function (id) {
 			var player = self.players[id];
 			if (player) {
-		        	//self.game.remove(player)
 		        	player.kill();
 
 					if (player.group)
@@ -150,8 +137,6 @@ var CandyConvicts = {
 	update: function() {
 		
 		var self = this;
-		// console.log("### UPDATING..");
-
 
 		// Handling Player Movement ////////////////////////////////////////////
 
@@ -162,7 +147,6 @@ var CandyConvicts = {
 
 			_.each(self.players, function(v) {
 				if (player != v) {
-					//self.game.physics.collide(v, self.tileLayer);
 					self.game.physics.collide(v, player);
 				}
 			});
@@ -176,7 +160,7 @@ var CandyConvicts = {
 				player.frame = (player.facing == Phaser.LEFT) ? 4 : 0;
 			}
 
-			if (self.jumpButton.isDown && player.body.touching.down && !player.jumping) {
+			if (self.jumpButton.isDown ) {
 				player.jumping = true;
 			} 
 
@@ -193,8 +177,7 @@ var CandyConvicts = {
 
 			}
 
-			//self.playersSync.remoteChange(self.myId, {x: player.x | 0, y: player.y | 0, animation: player.animations.currentAnim.name})
-			var datum = {x: player.x | 0, y: player.y | 0, animation: player.animations.currentAnim.name, type: player.type};
+			var datum = {x: player.x | 0, y: player.y | 0, animation: player.animations.currentAnim.name, type: player.playerType};
 			if (!_.isEqual(datum, self.old_emit))
 				self.socket.emit("change", datum);
 			self.old_emit = datum;

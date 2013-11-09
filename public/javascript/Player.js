@@ -2,7 +2,7 @@
 Player = function (game, x, y, type, own) {
 	
 	Phaser.Sprite.call(this, game, x, y, type);
-	this.type = type;
+	this.playerType = type;
 	this.x = x;
 	this.y = y;
 	this.movementSpeed = 600;
