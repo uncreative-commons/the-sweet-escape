@@ -16,7 +16,7 @@ app.listen(80);
 
 function handler (req, res) {
   var uri = url.parse(req.url).pathname;
-  if(uri="/") uri="/index.html";
+  if(uri=="/") uri="/index.html";
   var filename = path.join(process.cwd()+"/public", unescape(uri));
   var stats;
 
