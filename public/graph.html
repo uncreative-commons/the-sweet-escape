@@ -55,7 +55,7 @@
       },
       
       update: function($el, data) {
-        $el.find(".label").text(JSON.stringify({name: data.name, x: data.x, y: data.y, animation: data.animation }));
+        $el.find(".label").text(JSON.stringify({name: data.name, x: data.x, y: data.y, animation: data.animation, type: data.type }));
         $el.attr("data-rev", data._rev);
       },
 
