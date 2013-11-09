@@ -39,7 +39,7 @@ var CandyConvicts = {
 	game: {},
 	player: {},
 	cursors: {},
-	markers:{},
+	markers:[],
 	floor: {},
 
 	preinit: function(container) {
@@ -64,12 +64,12 @@ var CandyConvicts = {
 			for(var i=0;i!= data.layers.length;i++){
 				var dl = data.layers[i];
 				if(dl.objects){
-					for(var =0;j!= dl.objects.length;j++){
-						self.markers.push(dl.objects[i]);
+					for(var j=0;j!= dl.objects.length;j++){
+						var ttt = dl.objects[j];
+						self.markers.push(new Marker(self.game,ttt.x,ttt.y,ttt.width,ttt.height));
 					}
 				}
 			}
-			console.log(self.markers);
 		})
 		
 		console.log("### PRELOADING..");
@@ -206,6 +206,14 @@ var CandyConvicts = {
 				if (player != v) {
 					self.game.physics.collide(v, player);
 				}
+			});
+			
+			_.each(self.markers, function(v) {
+				self.game.physics.collide(v, player,function(){
+					if(Behaviors[v.name]){
+						Behaviors[v.name](self.game,v,player);
+					}
+				});
 			});
 
 			if (self.cursors.right.isDown || self.cursors.left.isDown) {
