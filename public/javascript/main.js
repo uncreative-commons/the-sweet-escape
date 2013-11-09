@@ -39,7 +39,7 @@ var CandyConvicts = {
 	game: {},
 	player: {},
 	cursors: {},
-
+	markers:{},
 	floor: {},
 
 	preinit: function(container) {
@@ -59,8 +59,19 @@ var CandyConvicts = {
 
 
 	preload: function() {
-
 		var self = this;
+		$.getJSON('tilemaps/' + room_id() + '.json',function(data){
+			for(var i=0;i!= data.layers.length;i++){
+				var dl = data.layers[i];
+				if(dl.objects){
+					for(var =0;j!= dl.objects.length;j++){
+						self.markers.push(dl.objects[i]);
+					}
+				}
+			}
+			console.log(self.markers);
+		})
+		
 		console.log("### PRELOADING..");
 
 		self.game.load.image('TestBackground', 'tilemaps/background.jpg');
@@ -70,8 +81,12 @@ var CandyConvicts = {
 			//_.where(data.layers, { type:"objectgroup"});
 		});
 		self.game.load.tilemap('Room', 'tilemaps/' + room_id() + '.json', null, Phaser.Tilemap.TILED_JSON);
+		self.game.load.image('waterdrop', 'images/waterdrop.png');
 		
     	self.game.load.tileset('tiles', 'tilemaps/tileset.png', 64, 64);
+    	// self.game.load.audio('music', 'audio/two.mp3');
+    	self.game.load.audio('music', ['audio/Dig_Up_Her_Bones.mp3']);
+
 	},
 
 	create: function() {
@@ -79,7 +94,7 @@ var CandyConvicts = {
 		var self = this;
 
 		console.log("### GAME CREATED!");
-
+		
 		// self.game.stage.backgroundColor = '#F8CA00';
 
 		var background = self.game.add.sprite(0, 0, 'TestBackground');
@@ -91,6 +106,8 @@ var CandyConvicts = {
 		self.tileLayer.fixedToCamera = false;
 		self.tileLayer.resizeWorld();
 
+		self.music = self.game.add.audio('music');
+	    self.music.play();
 
 		self.cursors = self.game.input.keyboard.createCursorKeys();
 		self.jumpButton = self.game.input.keyboard.addKey(Phaser.Keyboard.X);
@@ -118,6 +135,7 @@ var CandyConvicts = {
 
 		socket.on('heartbeat', function (seq) {
 			//handle stuff here
+			
 		});
   
 		socket.on('state', function (data) {
