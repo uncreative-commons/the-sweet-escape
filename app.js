@@ -1,6 +1,8 @@
 var static = require('node-static');
 
-var fileServer = new static.Server('./public')
+var fileServer = new static.Server('./public', {
+	cache: 0
+})
   , port = 8080;
 
 require('http').createServer(function (request, response) {
