@@ -15,7 +15,7 @@ function room_id() {
 function room_url() {
 	return  '/?roomId=' + room_id();	
 }
-var main;
+
 
 var CandyConvicts = {
 
@@ -26,7 +26,7 @@ var CandyConvicts = {
 
 	floor: {},
 
-	init: function(container) {
+	preinit: function(container) {
 
 		var self = this;
 
@@ -36,15 +36,11 @@ var CandyConvicts = {
 			container.height(),
 			Phaser.CANVAS,
 			'Candy Convicts',
-			{
-				preload: self.preload,
-				create:  self.create,
-				update:  self.update,
-				render:  self.render,
-			}
+			self
 		);
 
 	},
+
 
 	preload: function() {
 
@@ -62,8 +58,7 @@ var CandyConvicts = {
 	create: function() {
 
 		var self = this;
-		main = this;
-		
+
 		console.log("### GAME CREATED!");
 
 		// self.game.stage.backgroundColor = '#F8CA00';
@@ -200,7 +195,7 @@ var CandyConvicts = {
 //	This is the main entry point for the game
 
 $(function($) {
-	CandyConvicts.init($("#stageContainer"));
+	CandyConvicts.preinit($("#stageContainer"));
 	$(window).on('keyup', function(event) {
 		// console.log(event.keyCode);
 		if (event.keyCode == 32) {
