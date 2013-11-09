@@ -92,7 +92,7 @@ io.sockets.on('connection', function (socket) {
   });
   
   socket.on('disconnect', function (data) {
-    delete room[sid];
+    delete room.clients[sid];
     for(i in room){
 		io.sockets.socket(i).emit("remove",sid);
 	}
