@@ -99,6 +99,10 @@ var CandyConvicts = {
 			self.game.add.existing(player);
 			self.game.camera.follow(player);
 		});
+
+		socket.on('heartbeat', function (seq) {
+			//handle stuff here
+		});
   
 		socket.on('state', function (data) {
 			
@@ -191,7 +195,9 @@ var CandyConvicts = {
 
 			//self.playersSync.remoteChange(self.myId, {x: player.x | 0, y: player.y | 0, animation: player.animations.currentAnim.name})
 			var datum = {x: player.x | 0, y: player.y | 0, animation: player.animations.currentAnim.name, type: player.type};
-			self.socket.emit("change", datum);
+			if (!_.isEqual(datum, self.old_emit))
+				self.socket.emit("change", datum);
+			self.old_emit = datum;
 
 		}
 
