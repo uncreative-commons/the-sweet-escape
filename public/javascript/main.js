@@ -28,7 +28,8 @@ var CandyConvicts = {
 			{
 				preload: self.preload,
 				create:  self.create,
-				update:  self.update
+				update:  self.update,
+				render: self.render
 			}
 		);
 
@@ -51,12 +52,17 @@ var CandyConvicts = {
 		self.game.stage.backgroundColor = '#F8CA00';
 
 		self.player = self.game.add.sprite(0, 0, 'PopWalkRight');
-		self.player.y = 100;
+		self.player.x = 250;
+		self.player.y = 50;
+		self.player.body.gravity.y = 200;
+		self.player.body.collideWorldBounds = true;
 		self.player.animations.add('idle', [0]);
 		self.player.animations.add('right', [0,1,0,2], 8, true);
 		self.player.animations.play('idle');
 
 		var secondPop = new Player(self.game, 0, 300, "PopWalkRight");
+		secondPop.animations.add('idle', [0]);
+		secondPop.animations.add('right', [0,1,0,2], 8, true);
 		secondPop.animations.play('right');
 		self.game.add.existing(secondPop);
 
@@ -91,6 +97,8 @@ var CandyConvicts = {
 
 		var self = this;
 		console.log("### RENDERING..");
+
+		// self.game.debug.renderSpriteInfo(self.player, 32, 32);
 
 	}
 
