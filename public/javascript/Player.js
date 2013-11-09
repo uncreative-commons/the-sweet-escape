@@ -44,11 +44,8 @@ Player = function (game, x, y, type, own) {
 
 			self.animations.add('right', [0,1,0,2], 8, true);
 			self.animations.add('left', [3,4,3,5], 8, true);
-			self.animations.play('idle');
 			break;
 	}
-
-	self.animations.play('idle_right');
 };
 
 Player.prototype = Object.create(Phaser.Sprite.prototype);

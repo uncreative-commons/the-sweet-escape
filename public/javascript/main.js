@@ -8,7 +8,23 @@
 
 
 function room_id() {
-	return  document.location.href.split("?")[1] || "0";
+	return  parseInt(document.location.href.split("?")[1] || "0");
+}
+
+function next_room() {
+	return  document.location.href.split("?")[0] + "?" + (room_id() + 1) + "?" + CandyConvicts.players[CandyConvicts.myId].playerType + "?0";
+}
+
+function prev_room() {
+	return  document.location.href.split("?")[0] + "?" + (room_id() - 1)+ "?" + CandyConvicts.players[CandyConvicts.myId].playerType + "?1";
+}
+
+function room_getChar() {
+	return document.location.href.split("?")[2];
+}
+
+function room_getSpawnPos() {
+	return parseInt(document.location.href.split("?")[3]) || 0;
 }
 
 //http://192.168.2.64
@@ -50,6 +66,9 @@ var CandyConvicts = {
 		self.game.load.image('TestBackground', 'tilemaps/background.jpg');
 		self.game.load.spritesheet('PopWalk', 'images/PopWalkSprite.png', 200, 200);
 		self.game.load.spritesheet('Boogie', 'images/BoogieSprite2.png', 132, 200);
+		$.ajax({url: "tilemaps/1b.json", dataType: "json"}).done(function(data) {
+			//_.where(data.layers, { type:"objectgroup"});
+		});
 		self.game.load.tilemap('Room', 'tilemaps/' + room_id() + '.json', null, Phaser.Tilemap.TILED_JSON);
 		
     	self.game.load.tileset('tiles', 'tilemaps/tileset.png', 64, 64);
@@ -84,12 +103,17 @@ var CandyConvicts = {
 			self.myId = id;
 			console.log("i am", self.myId);
 
-			var datum = {x: 250, y: 80, type: _.sample(["Boogie", "PopWalk"])};
+			var begg = !room_getSpawnPos();
+			var pos = begg ? 100 : (self.tileLayer.width-300);
+
+			var datum = {x: pos , y: 300, type: room_getChar() || _.sample(["Boogie", "PopWalk"])};
 
 			var player = self.players[id] = new Player(self.game, datum.x, datum.y, datum.type, true);
 
 			self.game.add.existing(player);
 			self.game.camera.follow(player);
+
+			player.facing = begg ? Phaser.RIGHT : Phaser.LEFT;
 		});
 
 		socket.on('heartbeat', function (seq) {
@@ -115,7 +139,7 @@ var CandyConvicts = {
 		      	player.y = datum.y;
 		      	if (player.animations.currentAnim.name != datum.animation)
 	      			player.animations.play(datum.animation);
-	      		console.log(id, datum.x, datum.y, datum.animation);
+	      		//console.log(id, datum.x, datum.y, datum.animation);
 			}
 		});
 
@@ -148,6 +172,17 @@ var CandyConvicts = {
 
 		if (player) {
 			self.game.physics.collide(player, self.tileLayer);
+
+
+			if ( (player.x +player.width*1.2) > self.tileLayer.width) {
+				document.location = next_room();
+				window.setTimeout(function() { self.game.destroy(); }, 0);
+			}
+
+			if ( room_id() != 0 && (player.x - player.width*0.2 ) < 0) {
+				document.location = prev_room();
+				window.setTimeout(function() { self.game.destroy(); }, 0);
+			}
 
 			_.each(self.players, function(v) {
 				if (player != v) {
