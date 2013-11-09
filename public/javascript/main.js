@@ -64,6 +64,10 @@ var CandyConvicts = {
 		self.player.x = 250;
 		self.player.y = 50;
 		self.player.facing = 1;
+		self.player.body.width = 80;
+		self.player.body.offset.x = 70;
+		self.player.body.offset.y = 100;
+		self.player.body.height = 100;
 		self.player.body.gravity.y = 200;
 		self.player.body.collideWorldBounds = true;
 		self.player.animations.add('idle', [0]);
@@ -103,12 +107,12 @@ var CandyConvicts = {
 		}
 
 		if (self.cursors.right.isDown || self.cursors.left.isDown) {
-			self.player.facing = (self.cursors.left.isDown) ? -1 : 1;
-			self.player.body.velocity.x = self.player.facing * 500;
-			self.player.animations.play((self.player.facing == 1) ? 'right' : 'left');
+			self.player.facing = (self.cursors.left.isDown) ? Phaser.LEFT : Phaser.RIGHT;
+			self.player.body.velocity.x = (self.player.facing == Phaser.LEFT) ? -500 : 500;
+			self.player.animations.play((self.player.facing == Phaser.RIGHT) ? 'right' : 'left');
 		} else {
 			self.player.body.velocity.x = 0;
-			self.player.frame = (self.player.facing == -1) ? 4 : 0;
+			self.player.frame = (self.player.facing == Phaser.LEFT) ? 4 : 0;
 		}
 
 		if (self.jumpButton.isDown) {
@@ -123,6 +127,7 @@ var CandyConvicts = {
 		console.log("### RENDERING..");
 
 		self.game.debug.renderCameraInfo(self.game.camera, 32, 64);
+		// self.game.debug.renderRectangle(self.player.body);
 
 	}
 
