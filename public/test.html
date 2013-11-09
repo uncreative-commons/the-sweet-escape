@@ -1,0 +1,27 @@
+<html>
+<head>
+
+</head>
+<body>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+	var states = {};
+  var whoami=null;
+  var socket = io.connect('http://localhost/?roomId=3');
+  socket.on('whoami', function (data) {
+		whoami = data;
+		console.log(whoami);
+  });
+	  
+  socket.on('state', function (data) {
+		console.log(data);
+		for(var i in data){
+			states[i] = data[i];
+		}
+		console.log(data);
+  });
+  
+  
+</script>
+</body>
+</html>
