@@ -51,6 +51,7 @@ var CandyConvicts = {
 		self.game.load.spritesheet('PopWalk', 'images/PopWalkSprite.png', 200, 200);
 		self.game.load.spritesheet('Boogie', 'images/BoogieSprite2.png', 132, 200);
 		self.game.load.tilemap('Room', 'tilemaps/' + room_id() + '.json', null, Phaser.Tilemap.TILED_JSON);
+		self.game.load.image('waterdrop', 'images/waterdrop.png');
 		
     	self.game.load.tileset('tiles', 'tilemaps/tileset.png', 64, 64);
 	},
@@ -60,7 +61,7 @@ var CandyConvicts = {
 		var self = this;
 
 		console.log("### GAME CREATED!");
-
+		
 		// self.game.stage.backgroundColor = '#F8CA00';
 
 		var background = self.game.add.sprite(0, 0, 'TestBackground');
@@ -94,6 +95,7 @@ var CandyConvicts = {
 
 		socket.on('heartbeat', function (seq) {
 			//handle stuff here
+			
 		});
   
 		socket.on('state', function (data) {
