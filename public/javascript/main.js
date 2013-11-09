@@ -190,52 +190,60 @@ var CandyConvicts = {
 		var player = self.players[self.myId];
 
 		if (player) {
-			self.game.physics.collide(player, self.tileLayer);
 
-
-			if ( (player.x +player.width*1.2) > self.tileLayer.width) {
-				document.location = next_room();
-				window.setTimeout(function() { self.game.destroy(); }, 0);
-			}
-
-			if ( room_id() != 0 && (player.x - player.width*0.2 ) < 0) {
-				document.location = prev_room();
-				window.setTimeout(function() { self.game.destroy(); }, 0);
-			}
-
-			_.each(self.players, function(v) {
-				if (player != v) {
-					self.game.physics.collide(v, player);
+			if (player.dead) {
+				if (Math.abs(player.body.bottom - CandyConvicts.tileLayer.height) < 10) {
+					window.location.reload();
+					self.game.destroy();
 				}
-			});
-			
-			_.each(self.markers, function(v) {
-				self.game.physics.collide(v, player,function(){
-					if(Behaviors[v.markerName]){
-						Behaviors[v.markerName](self.game,v,player);
+			}
+			else {
+				self.game.physics.collide(player, self.tileLayer);
+
+
+				if ( (player.x +player.width*1.2) > self.tileLayer.width) {
+					document.location = next_room();
+					window.setTimeout(function() { self.game.destroy(); }, 0);
+				}
+
+				if ( room_id() != 0 && (player.x - player.width*0.2 ) < 0) {
+					document.location = prev_room();
+					window.setTimeout(function() { self.game.destroy(); }, 0);
+				}
+
+				_.each(self.players, function(v) {
+					if (player != v) {
+						self.game.physics.collide(v, player);
 					}
 				});
-			});
+				
+				_.each(self.markers, function(v) {
+					self.game.physics.collide(v, player,function(){
+						if(Behaviors[v.markerName]){
+							Behaviors[v.markerName](self.game,v,player);
+						}
+					});
+				});
 
-			if (self.cursors.right.isDown || self.cursors.left.isDown) {
-				player.facing = (self.cursors.left.isDown) ? Phaser.LEFT : Phaser.RIGHT;
-				player.body.velocity.x = (player.facing == Phaser.LEFT) ? -player.movementSpeed : player.movementSpeed;
-				player.animations.play((player.facing == Phaser.RIGHT) ? 'right' : 'left');
-			} else {
-				player.body.velocity.x = 0;
+				if (self.cursors.right.isDown || self.cursors.left.isDown) {
+					player.facing = (self.cursors.left.isDown) ? Phaser.LEFT : Phaser.RIGHT;
+					player.body.velocity.x = (player.facing == Phaser.LEFT) ? -player.movementSpeed : player.movementSpeed;
+					player.animations.play((player.facing == Phaser.RIGHT) ? 'right' : 'left');
+				} else {
+					player.body.velocity.x = 0;
 
-				player.animations.play((player.facing == Phaser.RIGHT) ? 'idle_right' : 'idle_left');	
+					player.animations.play((player.facing == Phaser.RIGHT) ? 'idle_right' : 'idle_left');	
+				}
+
+				if ((self.jumpButton.isDown || self.cursors.up.isDown) && player.body.touching.down ) {
+					player.body.velocity.y = -500;
+				} 
+
+				var datum = {x: player.x | 0, y: player.y | 0, animation: player.animations.currentAnim.name, type: player.playerType};
+				if (!_.isEqual(datum, self.old_emit))
+					self.socket.emit("change", datum);
+				self.old_emit = datum;
 			}
-
-			if ((self.jumpButton.isDown || self.cursors.up.isDown) && player.body.touching.down ) {
-				player.body.velocity.y = -500;
-			} 
-
-			var datum = {x: player.x | 0, y: player.y | 0, animation: player.animations.currentAnim.name, type: player.playerType};
-			if (!_.isEqual(datum, self.old_emit))
-				self.socket.emit("change", datum);
-			self.old_emit = datum;
-
 		}
 
 	},
