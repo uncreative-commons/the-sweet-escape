@@ -52,26 +52,45 @@ function handler (req, res) {
   }
 }
 var Rooms = {};
+var counter=0;
+setInterval(function(){
+	io.sockets.emit("heartbeat",counter++);
+},1000);  
 io.sockets.on('connection', function (socket) {
   var roomId = socket.handshake.query.roomId;
   if(!roomId) roomId=0;
-  if(!Rooms[roomId]){ Rooms[roomId] = {};}
+  if(!Rooms[roomId]){ Rooms[roomId] = {clients:{},objects:{}};}
   var room = Rooms[roomId];
   var sid = socket.id;
-  room[sid]={};
+  room.clients[sid]={};
   socket.emit('whoami', sid);
-  socket.emit('state', room);
+  socket.emit('state', room.clients);
+  socket.emit('objects', room.objects);
+  
   socket.on('change', function (data) {
-	console.log(room);
-    var t = {};
+	var t = {};
 	t[sid] = data;
-	room[sid] = data;
-	for(i in room){
+	room.clients[sid] = data;
+	for(i in room.clients){
 		if(i!=sid){
 			io.sockets.socket(i).emit("state",t);
 	    }
 	}
   });
+  
+  socket.on('object', function (data) {
+	var t = {};
+	for(var i in data){
+		t[i] = data[i];
+		room.objects[i] = data[i];
+	}
+	for(var i in room.clients){
+		if(i!=sid){
+			io.sockets.socket(i).emit("objects",t);
+	    }
+	}
+  });
+  
   socket.on('disconnect', function (data) {
     delete room[sid];
     for(i in room){
