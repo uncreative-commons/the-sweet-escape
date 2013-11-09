@@ -6,6 +6,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+var room_id = 'http://192.168.2.6/?roomId=3';
+
 var CandyConvicts = {
 
 	container: {},
@@ -83,41 +85,47 @@ var CandyConvicts = {
 		self.jumpButton = self.game.input.keyboard.addKey(Phaser.Keyboard.X);
 
 		self.players={};
-		self.playersSync = new watcher({
-		      endpoint: "arena",
 
-		      getEntity: function (data) {
-		      	return self.players[data._id];
-		        //return $('[data-uid="' + data._id + '"]');
-		      },
-		      create: function(player, data) {
-		      	if (player)
-		        	this.destroy(player, data);
-		      },
-		      
-		      /*
-		      update_notify: function(player, data) {
-		      	return data._id == self.myId;
-		      },*/
+		var socket = self.socket = io.connect(room_id);
 
-		      update: function(player, data) {
-		      	if (!player) {
-		      		player = self.players[data._id] = new Player(self.game, data.x, data.y, data.type, data._id == self.myId)
+		socket.on('whoami', function (id) {
+			self.myId = id;
+			console.log("i am", self.myId);
+
+			var datum = {x: 250, y: 20, type: _.sample(["Boogie", "PopWalk"])};
+			socket.emit("change", datum);
+
+			var player = self.players[id] = new Player(self.game, datum.x, datum.y, datum.type, true);
+			self.game.add.existing(player);
+			self.game.camera.follow(player);
+		});
+  
+		socket.on('state', function (data) {
+			
+			for(var id in data){
+				var datum = data[id];
+				if (!_.size(datum))
+					continue;
+
+				var player = self.players[id];
+				
+				if (!player) {
+					player = self.players[id] = new Player(self.game, datum.x, datum.y, datum.type, false)
 					self.game.add.existing(player);
-		      	}
+				}
 
-		      	if (!player.own) {
+		
+				player.x = datum.x;
+		      	player.y = datum.y;
+		      	if (player.animations.currentAnim.name != datum.animation)
+	      			player.animations.play(datum.animation);
+	      		console.log(id, datum.x, datum.y, datum.animation);
+			}
+		});
 
-			      	player.x = data.x;
-			      	player.y = data.y;
-			      	if (player.animations.currentAnim.name != data.animation)
-		      			player.animations.play(data.animation);
-		      	}
-
-		      },
-
-		      destroy: function(player, data) {
-		        if (player) {
+		socket.on('remove', function (id) {
+			var player = self.players[id];
+			if (player) {
 		        	//self.game.remove(player)
 		        	player.kill();
 
@@ -129,12 +137,10 @@ var CandyConvicts = {
 					{
 					   player.parent.removeChild(player);
 					}
-		        }
-		      }
-
+		    }
+			console.log("remove", id);
 		});
-
-		self.myId = self.playersSync.remoteAdd({x: 250, y: 20, type: _.sample(["Boogie", "PopWalk"])});
+		
 	},
 
 	update: function() {
@@ -148,7 +154,6 @@ var CandyConvicts = {
 		var player = self.players[self.myId];
 
 		if (player) {
-			self.game.camera.follow(player);
 			self.game.physics.collide(player, self.tileLayer);
 
 			_.each(self.players, function(v) {
@@ -184,7 +189,9 @@ var CandyConvicts = {
 
 			}
 
-			self.playersSync.remoteChange(self.myId, {x: player.x | 0, y: player.y | 0, animation: player.animations.currentAnim.name})
+			//self.playersSync.remoteChange(self.myId, {x: player.x | 0, y: player.y | 0, animation: player.animations.currentAnim.name})
+			var datum = {x: player.x | 0, y: player.y | 0, animation: player.animations.currentAnim.name, type: player.type};
+			self.socket.emit("change", datum);
 
 		}
 

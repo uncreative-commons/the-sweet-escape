@@ -5,6 +5,7 @@
         "start": "node app.js"
     },
     "dependencies": {
-        "node-static": "*"
+        "node-static": "*",
+        "socket.io": "*"
     }
 }
