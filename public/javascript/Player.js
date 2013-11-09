@@ -48,16 +48,19 @@ Player = function (game, x, y, type, own) {
 
 		case "PopWalk":
 			self.body.width = 80;
-			self.body.offset.x = 70;
-			self.body.offset.y = 98;
+			self.body.offset.x = 64;
+			self.body.offset.y = 86;
 			self.body.height = 100;
 
 			self.body.collideWorldBounds = true;
 			self.animations.add('idle_right', [1]);
 			self.animations.add('idle_left', [4]);
-
 			self.animations.add('right', [0,1,0,2], 8, true);
 			self.animations.add('left', [3,4,3,5], 8, true);
+			self.animations.add('jump_right', [7,6], 1, true);
+			self.animations.add('jump_left', [10,9], 1, true);
+			self.animations.add('fall_right', [8], 1, true);
+			self.animations.add('fall_left', [11], 1, true);
 			break;
 	}
 };
