@@ -76,7 +76,7 @@ var CandyConvicts = {
 		console.log("### PRELOADING..");
 
 		self.game.load.image('TestBackground', 'tilemaps/background.jpg');
-		self.game.load.spritesheet('PopWalk', 'images/PopWalkSprite.png', 200, 200);
+		self.game.load.spritesheet('Pop', 'images/PopWalkSprite.png', 200, 200);
 		self.game.load.spritesheet('Boogie', 'images/BoogieSprite2.png', 132, 200);
 		$.ajax({url: "tilemaps/1b.json", dataType: "json"}).done(function(data) {
 			//_.where(data.layers, { type:"objectgroup"});
@@ -124,7 +124,7 @@ var CandyConvicts = {
 			var begg = !room_getSpawnPos();
 			var pos = begg ? 100 : (self.tileLayer.width-300);
 
-			var datum = {x: pos , y: 300, type: room_getChar() || _.sample(["Boogie", "PopWalk"])};
+			var datum = {x: pos , y: 300, type: room_getChar() || _.sample(["Boogie", "Pop"])};
 
 			var player = self.players[id] = new Player(self.game, datum.x, datum.y, datum.type, true);
 
