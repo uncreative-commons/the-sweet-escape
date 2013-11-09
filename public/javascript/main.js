@@ -44,6 +44,8 @@ var CandyConvicts = {
 		self.game.load.spritesheet('PopWalk', 'images/PopWalkSprite.png', 200, 200);
 		self.game.load.spritesheet('Boogie', 'images/BoogieSprite2.png', 132, 200);
 		self.game.load.tilemap('Room0', 'tilemaps/0.json', null, Phaser.Tilemap.TILED_JSON);
+		self.game.load.tilemap('Room1', 'tilemaps/1.json', null, Phaser.Tilemap.TILED_JSON);
+		self.game.load.tilemap('Room2', 'tilemaps/2.json', null, Phaser.Tilemap.TILED_JSON);
     	self.game.load.tileset('tiles', 'tilemaps/tileset.png', 64, 64);
 
 	},
@@ -57,7 +59,7 @@ var CandyConvicts = {
 
 		var background = self.game.add.sprite(0, 0, 'TestBackground');
 
-		self.currentRoom = self.game.add.tilemap('Room0');
+		self.currentRoom = self.game.add.tilemap('Room1');
 		self.tileset = self.game.add.tileset('tiles');
 		self.tileset.setCollisionRange(1, 6, true, true, true, true);
 		self.tileLayer = self.game.add.tilemapLayer(0, 0, self.currentRoom.layers[0].width*self.tileset.tileWidth, self.currentRoom.layers[0].height*self.tileset.tileWidth, self.tileset, self.currentRoom, 0);
@@ -154,7 +156,7 @@ var CandyConvicts = {
 	render: function() {
 
 		var self = this;
-		console.log("### RENDERING..");
+		// console.log("### RENDERING..");
 
 		self.game.debug.renderCameraInfo(self.game.camera, 32, 64);
 		// self.game.debug.renderRectangle(self.player.body);
