@@ -1,14 +1,15 @@
 Behaviors = {
-	"water": function(game,marker,block){
-		console.log("Two doors the life has, said yoda the wise");
+	"water": function(game,marker,player){
+		particleSplash(player.x+50,player.y+100);
 	},
-	"next#1": function(game,marker,block){
+	"next#1": function(game,marker,player){
 		console.log("OMG WATER!!! NOOOOOOOOOOOOOOOOO")
 	}
 }
 
-Marker = function (game, x, y, width,height){
+Marker = function (game, x, y, width,height,name){
 	Phaser.Sprite.call(this, game, x, y,"Boogie");
+	this.markerName = name;
 	this.body.x = x;
 	this.body.y = y;
 	this.body.customSeparateX = true;
