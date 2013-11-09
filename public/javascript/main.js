@@ -147,8 +147,20 @@ var CandyConvicts = {
 			self.player.frame = (self.player.facing == Phaser.LEFT) ? 4 : 0;
 		}
 
-		if (self.jumpButton.isDown) {
-			self.player.body.velocity.y = -300;
+		if (self.jumpButton.isDown && self.player.body.touching.down && !self.player.jumping) {
+			self.player.jumping = true;
+		} 
+
+		if (self.player.jumping) {
+			self.player.body.velocity.x = (self.player.facing == Phaser.LEFT) ? -1500 : 1500;
+			self.player.body.velocity.y = -1500;
+			self.player.jumpTimer += 1;
+			if (self.player.jumpTimer >= 8) {
+				self.player.jumping = false;
+				self.player.body.velocity.x = 0;
+				self.player.body.velocity.y = 0;
+				self.player.jumpTimer = 0;
+			}
 		}
 
 	},
@@ -158,7 +170,7 @@ var CandyConvicts = {
 		var self = this;
 		// console.log("### RENDERING..");
 
-		self.game.debug.renderCameraInfo(self.game.camera, 32, 64);
+		// self.game.debug.renderCameraInfo(self.game.camera, 32, 64);
 		// self.game.debug.renderRectangle(self.player.body);
 
 	}
@@ -171,6 +183,7 @@ var CandyConvicts = {
 $(function($) {
 	CandyConvicts.init($("#stageContainer"));
 	$(window).on('keyup', function(event) {
+		// console.log(event.keyCode);
 		if (event.keyCode == 32) {
 			console.log("PAUSED?");
 		}
