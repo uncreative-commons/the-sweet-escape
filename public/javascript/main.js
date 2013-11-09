@@ -75,8 +75,9 @@ var CandyConvicts = {
 		
 		console.log("### PRELOADING..");
 
-		self.game.load.image('TestBackground', 'tilemaps/background.jpg');
-		self.game.load.spritesheet('Pop', 'images/PopWalkSprite.png', 200, 200);
+		self.game.load.image('TestBackground', 'tilemaps/background1.jpg');
+		self.game.load.spritesheet('Pop', 'images/PopSprite.png', 195, 200);
+
 		self.game.load.spritesheet('Boogie', 'images/BoogieSprite2.png', 132, 200);
 		$.ajax({url: "tilemaps/1b.json", dataType: "json"}).done(function(data) {
 			//_.where(data.layers, { type:"objectgroup"});
@@ -229,6 +230,8 @@ var CandyConvicts = {
 
 			if ((self.jumpButton.isDown || self.cursors.up.isDown) && player.body.touching.down ) {
 				player.body.velocity.y = -500;
+				if (player.playerType === "PopWalk")
+					player.animations.play(player.facing == Phaser.LEFT ? "jump_left" : "jump_right");
 			} 
 
 			var datum = {x: player.x | 0, y: player.y | 0, animation: player.animations.currentAnim.name, type: player.playerType};
