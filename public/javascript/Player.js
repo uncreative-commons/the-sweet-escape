@@ -5,6 +5,7 @@ Player = function (game, x, y, type, own) {
 	this.x = x;
 	this.y = y;
 	this.body.collideWorldBounds = true;
+	this.own = own || false;
 	
 	var self = this;
 

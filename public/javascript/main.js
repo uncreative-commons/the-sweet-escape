@@ -65,8 +65,10 @@ var CandyConvicts = {
 		self.tileLayer.resizeWorld();
 
 
+		/*
 		self.player = new Player(self.game, 250, 50, "PopWalk", true);
 		self.game.add.existing(self.player);
+		*/
 
 /*
 		var boogie = new Player(self.game, 520, 300, "Boogie");
@@ -75,7 +77,6 @@ var CandyConvicts = {
 
 		//self.players = [boogie];
 
-		self.game.camera.follow(self.player);
 		self.cursors = self.game.input.keyboard.createCursorKeys();
 		self.jumpButton = self.game.input.keyboard.addKey(Phaser.Keyboard.X);
 
@@ -94,12 +95,18 @@ var CandyConvicts = {
 		      
 		      update: function(player, data) {
 		      	if (!player) {
-		      		player = self.players[data._id] = new Player(self.game, data.x, data.y, "Boogie")
+		      		player = self.players[data._id] = new Player(self.game, data.x, data.y, data.type, data._id == self.myId)
 					self.game.add.existing(player);
 		      	}
 
-		      	player.x = data.x;
-		      	player.y = data.y;
+		      	if (!player.own) {
+
+			      	player.x = data.x;
+			      	player.y = data.y;
+			      	if (player.animations.currentAnim.name != player.animation)
+		      			player.animations.play(player.animation);
+		      	}
+		      	
 		      },
 
 		      destroy: function(player, data) {
@@ -119,6 +126,8 @@ var CandyConvicts = {
 		      }
 
 		});
+
+		self.myId = self.playersSync.remoteAdd({x: 250, y: 20, type: _.sample(["Boogie", "PopWalk"])});
 	},
 
 	update: function() {
@@ -129,24 +138,35 @@ var CandyConvicts = {
 
 		// Handling Player Movement ////////////////////////////////////////////
 
-		self.game.physics.collide(self.player, self.tileLayer);
 
-		_.each(self.players, function(v) {
-			self.game.physics.collide(v, self.tileLayer);
-			self.game.physics.collide(v, self.player);
-		});
 
-		if (self.cursors.right.isDown || self.cursors.left.isDown) {
-			self.player.facing = (self.cursors.left.isDown) ? Phaser.LEFT : Phaser.RIGHT;
-			self.player.body.velocity.x = (self.player.facing == Phaser.LEFT) ? -500 : 500;
-			self.player.animations.play((self.player.facing == Phaser.RIGHT) ? 'right' : 'left');
-		} else {
-			self.player.body.velocity.x = 0;
-			self.player.frame = (self.player.facing == Phaser.LEFT) ? 4 : 0;
-		}
+		var player = self.players[self.myId];
 
-		if (self.jumpButton.isDown) {
-			self.player.body.velocity.y = -300;
+		if (player) {
+			self.game.camera.follow(player);
+			self.game.physics.collide(player, self.tileLayer);
+
+			_.each(self.players, function(v) {
+				if (player != v) {
+					//self.game.physics.collide(v, self.tileLayer);
+					self.game.physics.collide(v, player);
+				}
+			});
+
+			if (self.cursors.right.isDown || self.cursors.left.isDown) {
+				player.facing = (self.cursors.left.isDown) ? Phaser.LEFT : Phaser.RIGHT;
+				player.body.velocity.x = (player.facing == Phaser.LEFT) ? -500 : 500;
+				player.animations.play((player.facing == Phaser.RIGHT) ? 'right' : 'left');
+			} else {
+				player.body.velocity.x = 0;
+				player.frame = (player.facing == Phaser.LEFT) ? 4 : 0;
+			}
+
+			if (self.jumpButton.isDown) {
+				player.body.velocity.y = -300;
+			}
+
+			self.playersSync.remoteChange(self.myId, {x: player.x, y: player.y, animation: player.animations.currentAnim.name})
 		}
 
 	},
@@ -154,7 +174,7 @@ var CandyConvicts = {
 	render: function() {
 
 		var self = this;
-		console.log("### RENDERING..");
+		//console.log("### RENDERING..");
 
 		self.game.debug.renderCameraInfo(self.game.camera, 32, 64);
 		// self.game.debug.renderRectangle(self.player.body);
