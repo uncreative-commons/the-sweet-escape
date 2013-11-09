@@ -56,7 +56,7 @@ Player = function (game, x, y, type, own) {
 			self.animations.add('left', [3,4,3,5], 8, true);
 			break;
 
-		case "PopWalk":
+		case "Pop":
 			self.body.width = 80;
 			self.body.offset.x = 70;
 			self.body.offset.y = 98;
