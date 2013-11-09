@@ -129,8 +129,10 @@ watcher.prototype.process_message = function(evt, data, item, id) {
 			cdbGet(this.endpoint, id).done(function(data) {
 				var item = that.items[id];
 				
-				if (item)
+				if (item) {
+					delete item._changing;
 					that.message("update", _.extend(item, data));
+				}
 			});
 		}
 		
@@ -149,6 +151,11 @@ watcher.prototype.remoteAdd = function(data) {
 }
 
 watcher.prototype.remoteSet = function(data) {
+
+	if (this.items[data._id]._changing)
+		return;
+	
+	this.items[data._id]._changing = true;
 
 	var x = _.clone(data);
 	var reject = _.filter(_.keys(x), function(n) { n[0] == "_" });
