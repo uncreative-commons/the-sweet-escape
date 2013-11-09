@@ -140,7 +140,7 @@ var CandyConvicts = {
 
 //	This is the main entry point for the game
 
-Zepto(function($) {
+$(function($) {
 	CandyConvicts.init($("#stageContainer"));
 	$(window).on('keyup', function(event) {
 		if (event.keyCode == 32) {
