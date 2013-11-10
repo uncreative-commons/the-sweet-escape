@@ -15,6 +15,8 @@ Behaviors = {
 	},
 	"button": function(world,marker,player,arg){
 		if(marker.count && COUNT - marker.count < 2) return;
+		if (!marker.animations)
+			marker = world.buttons[_.first(_.keys(world.buttons))];
 		marker.count = COUNT;
 		marker.enabled = marker.enabled ? false:true;
 		marker.animations.play(marker.enabled ? 'on' : 'off')
