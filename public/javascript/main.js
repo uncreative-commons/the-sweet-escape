@@ -91,6 +91,7 @@ var candies = {
 				m.emmiter.kill();
 			}
 		}
+		self.socket
 	},
 	preload: function() {
 		var self = this;
@@ -106,7 +107,7 @@ var candies = {
 		self.game.load.tilemap('Room', 'tilemaps/' + room_getId() + '.json', null, Phaser.Tilemap.TILED_JSON);
 		self.game.load.image('waterdrop', 'images/waterdrop.png');
 		self.game.load.image('stars', 'images/stars.png');
-		self.game.load.image('fire', 'images/firetongue.png');
+		self.game.load.image('fire', 'images/flametongue.png');
 		self.game.load.spritesheet('Button', 'images/wallswitchanime.png', 64, 100);
 		
     	self.game.load.tileset('tiles', 'tilemaps/tileset.png', 64, 64);
