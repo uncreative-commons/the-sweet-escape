@@ -61,13 +61,14 @@ setInterval(function(){
 io.sockets.on('connection', function (socket) {
   var roomId = socket.handshake.query.roomId;
   if(!roomId) roomId=0;
-  if(!Rooms[roomId]){ Rooms[roomId] = {clients:{},objects:{}};}
+  if(!Rooms[roomId]){ Rooms[roomId] = {clients:{},objects:{},enabled:{}};}
   var room = Rooms[roomId];
   var sid = socket.id;
   room.clients[sid]={};
   socket.emit('whoami', sid);
   socket.emit('state', room.clients);
   socket.emit('objects', room.objects);
+  socket.emit('enabled', room.enabled);
   
   socket.on('change', function (data) {
 	var t = {};
@@ -98,6 +99,11 @@ io.sockets.on('connection', function (socket) {
 			io.sockets.socket(i).emit("objects",t);
 	    }
 	}
+  });
+  socket.on('enabled', function (data) {
+	  for(var i in data){
+		room.enabled[i] = data[i];
+	  }
   });
   
   socket.on('disconnect', function (data) {
