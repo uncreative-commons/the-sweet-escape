@@ -7,6 +7,21 @@ Behaviors = {
 		}
 	},
 	"button": function(world,marker,player,arg){
+		if(world.targets[marker.target]){
+			var m = world.teleports[marker.target];
+			if(m){
+				m.enabled = m.enabled ? false:true;
+			}
+			world.checkTeleports();
+		}
+	},
+	"teleport": function(world,marker,player,arg){
+		var m = marker;
+		if(world.targets[marker.target] && marker.enabled){
+			player.x = world.targets[marker.target].x;
+			player.y = world.targets[marker.target].y;
+			particleStars(player.x,player.y);
+		}
 	},
 	"next": function(world,marker,player,arg){
 		if (player.own) {
@@ -15,9 +30,11 @@ Behaviors = {
 	}
 }
 
-Marker = function (game, x, y, width,height,name){
+Marker = function (game, x, y, width,height,name,target,enabled){
 	Phaser.Sprite.call(this, game, x, y,"Boogie");
 	this.markerName = name;
+	this.target = target;
+	this.enabled = enabled;
 	this.body.x = x;
 	this.body.y = y;
 	this.body.customSeparateX = true;

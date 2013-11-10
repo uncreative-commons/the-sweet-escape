@@ -51,6 +51,8 @@ var CandyConvicts = {
 	cursors: {},
 	markers:[],
 	floor: {},
+	teleports:{},
+	targets:{},
 
 	preinit: function(container) {
 
@@ -66,8 +68,29 @@ var CandyConvicts = {
 		);
 
 	},
-
-
+	checkTeleports:function(){
+		var self = this;
+		for(var i in this.teleports){
+			var m = this.teleports[i];
+			if(!m.emmiter){
+				m.emmiter = self.game.particles.add(new Phaser.Particles.Arcade.Emitter(self.game, 20, 20, 50));
+				m.emmiter.makeParticles("stars");
+				m.emmiter.gravity=10;
+				m.emmiter.x = m.x;
+				m.emmiter.y = m.y;
+				m.emmiter.width = m.width;
+				m.emmiter.height = 20;
+				m.emmiter.minParticleSpeed = new Phaser.Point(-100, -100);
+				m.emmiter.setXSpeed(-2, 2);
+			}
+			
+			if(m.enabled){
+				m.emmiter.start(false,500,null,50+parseInt(Math.random()*5));
+			}else{
+				m.emmiter.kill();
+			}
+		}
+	},
 	preload: function() {
 		var self = this;
 		$.getJSON('tilemaps/' + room_id() + '.json',function(data){
@@ -76,7 +99,16 @@ var CandyConvicts = {
 				if(dl.objects){
 					for(var j=0;j!= dl.objects.length;j++){
 						var ttt = dl.objects[j];
-						self.markers.push(new Marker(self.game,ttt.x,ttt.y,ttt.width,ttt.height,ttt.name));
+						var a = ttt.name.split("#");
+						var m = new Marker(self.game,ttt.x,ttt.y,ttt.width,ttt.height,a[0],a[1],a[0].match("!") ? false:true);
+						self.markers.push(m);
+						a[0] = a[0].replace("!","");
+						if(a[0] == "teleport"){
+							self.teleports[a[1]] = m;
+						}
+						if(a[0] == "target" && a[1]){
+							self.targets[a[1]] = m;
+						}
 					}
 				}
 			}
@@ -105,7 +137,7 @@ var CandyConvicts = {
 	create: function() {
 
 		var self = this;
-
+		
 		console.log("### GAME CREATED!");
 
 		$("#loading").remove();
@@ -130,6 +162,7 @@ var CandyConvicts = {
 		self.jumpButton = self.game.input.keyboard.addKey(Phaser.Keyboard.X);
 
 		self.players={};
+		self.checkTeleports();
 
 		var socket = self.socket = io.connect(room_url());
 
@@ -149,7 +182,7 @@ var CandyConvicts = {
 
 			player.facing = begg ? Phaser.RIGHT : Phaser.LEFT;
 		});
-
+	
 		socket.on('heartbeat', function (seq) {
 			//handle stuff here
 			
@@ -197,7 +230,7 @@ var CandyConvicts = {
 		socket.on('behavior', function (data) {
 			var player = self.players[data.id];
 			if (player) {
-				Behaviors[data.name](self.game,data.marker,player,data.arg);
+				Behaviors[data.name](self,data.marker,player);
 		    }
 		});
 		
@@ -245,10 +278,11 @@ var CandyConvicts = {
 				
 				_.each(self.markers, function(v) {
 					self.game.physics.collide(v, player,function(){
+						player.body.touching.down=false;
 						var a = v.markerName.split("#");
 						if(Behaviors[v.markerName]){
-							Behaviors[a[0]](self.game,v,player,a[1]);
-							self.socket.emit("behavior",{name:a[0],id:self.myId,marker:{x:v.x,y:v.y,width:v.width,height:v.height},arg:a[1]});
+							Behaviors[v.markerName](self,v,player);
+							self.socket.emit("behavior",{name:a[0],id:self.myId,marker:{x:v.x,y:v.y,width:v.width,height:v.height}});
 						}
 					});
 				});
