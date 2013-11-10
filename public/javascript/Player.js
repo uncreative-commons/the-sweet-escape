@@ -1,9 +1,11 @@
 Behaviors = {
-	"water": function(game,marker,player){
+	"water": function(world,marker,player,arg){
 		particleSplash(player.x+50,player.y+100);
 		player.dead = true;
 	},
-	"next#1": function(game,marker,player){
+	"button": function(world,marker,player,arg){
+	},
+	"next": function(world,marker,player,arg){
 		console.log("OMG WATER!!! NOOOOOOOOOOOOOOOOO")
 	}
 }

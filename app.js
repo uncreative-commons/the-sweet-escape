@@ -79,6 +79,13 @@ io.sockets.on('connection', function (socket) {
 	    }
 	}
   });
+  socket.on('behavior', function (data) {
+	for(i in room.clients){
+		if(i!=sid){
+			io.sockets.socket(i).emit("behavior",data);
+	    }
+	}
+  });
   
   socket.on('object', function (data) {
 	var t = {};

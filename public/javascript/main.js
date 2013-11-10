@@ -84,6 +84,7 @@ var CandyConvicts = {
 		});
 		self.game.load.tilemap('Room', 'tilemaps/' + room_id() + '.json', null, Phaser.Tilemap.TILED_JSON);
 		self.game.load.image('waterdrop', 'images/waterdrop.png');
+		self.game.load.image('stars', 'images/stars.png');
 		
     	self.game.load.tileset('tiles', 'tilemaps/tileset.png', 64, 64);
     	// self.game.load.audio('music', 'audio/two.mp3');
@@ -179,6 +180,12 @@ var CandyConvicts = {
 		    }
 			console.log("remove", id);
 		});
+		socket.on('behavior', function (data) {
+			var player = self.players[data.id];
+			if (player) {
+				Behaviors[data.name](self.game,data.marker,player,data.arg);
+		    }
+		});
 		
 	},
 
@@ -221,8 +228,10 @@ var CandyConvicts = {
 				
 				_.each(self.markers, function(v) {
 					self.game.physics.collide(v, player,function(){
+						var a = v.markerName.split("#");
 						if(Behaviors[v.markerName]){
-							Behaviors[v.markerName](self.game,v,player);
+							Behaviors[a[0]](self.game,v,player,a[1]);
+							self.socket.emit("behavior",{name:a[0],id:self.myId,marker:{x:v.x,y:v.y,width:v.width,height:v.height},arg:a[1]});
 						}
 					});
 				});
