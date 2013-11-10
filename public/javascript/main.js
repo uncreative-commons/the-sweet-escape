@@ -75,8 +75,9 @@ var CandyConvicts = {
 		
 		console.log("### PRELOADING..");
 
-		self.game.load.image('TestBackground', 'tilemaps/background.jpg');
-		self.game.load.spritesheet('Pop', 'images/PopWalkSprite.png', 200, 200);
+		self.game.load.image('TestBackground', 'tilemaps/background1.jpg');
+		self.game.load.spritesheet('Pop', 'images/PopSprite.png', 195, 200);
+
 		self.game.load.spritesheet('Boogie', 'images/BoogieSprite2.png', 132, 200);
 		$.ajax({url: "tilemaps/1b.json", dataType: "json"}).done(function(data) {
 			//_.where(data.layers, { type:"objectgroup"});
@@ -192,6 +193,7 @@ var CandyConvicts = {
 		if (player) {
 
 			if (player.dead) {
+				player.body.velocity.x = 0;
 				if (Math.abs(player.body.bottom - CandyConvicts.tileLayer.height) < 10) {
 					window.location.reload();
 					self.game.destroy();
@@ -229,14 +231,20 @@ var CandyConvicts = {
 					player.facing = (self.cursors.left.isDown) ? Phaser.LEFT : Phaser.RIGHT;
 					player.body.velocity.x = (player.facing == Phaser.LEFT) ? -player.movementSpeed : player.movementSpeed;
 					player.animations.play((player.facing == Phaser.RIGHT) ? 'right' : 'left');
+
+					if (!player.body.touching.down && player.body.velocity.y > 0)
+						player.animations.play((player.facing == Phaser.RIGHT) ? 'jump_right_steady' : 'jump_left_steady');
 				} else {
 					player.body.velocity.x = 0;
 
-					player.animations.play((player.facing == Phaser.RIGHT) ? 'idle_right' : 'idle_left');	
+					if (player.body.touching.down)
+						player.animations.play((player.facing == Phaser.RIGHT) ? 'idle_right' : 'idle_left');	
 				}
 
 				if ((self.jumpButton.isDown || self.cursors.up.isDown) && player.body.touching.down ) {
 					player.body.velocity.y = -500;
+					if (player.playerType === "Pop")
+						player.animations.play((player.facing == Phaser.RIGHT) ? 'jump_right' : 'jump_left');
 				} 
 
 				var datum = {x: player.x | 0, y: player.y | 0, animation: player.animations.currentAnim.name, type: player.playerType};
