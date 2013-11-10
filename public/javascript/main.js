@@ -52,7 +52,7 @@ var candies = {
 	floor: {},
 	teleports:{},
 	targets:{},
-	levels: ["0", "1", "2", "3", "4", "party"],
+	levels: ["0", "1", "2", "3", "4", "5", "party"],
 
 	preinit: function(container) {
 
@@ -70,12 +70,14 @@ var candies = {
 	},
 	checkTeleports:function(){
 		var self = this;
+		var a=[];
 		for(var i in this.teleports){
 			var m = this.teleports[i];
+			a.push(m.enabled);
 			if(!m.emmiter){
 				m.emmiter = self.game.particles.add(new Phaser.Particles.Arcade.Emitter(self.game, 20, 20, 50));
 				m.emmiter.makeParticles(m.markerName == "teleport" ? "stars":"fire");
-				m.emmiter.gravity=10;
+				m.emmiter.gravity=m.markerName == "teleport" ? 10:-5;
 				m.emmiter.x = m.x;
 				m.emmiter.y = m.y;
 				m.emmiter.width = m.width;
@@ -84,11 +86,12 @@ var candies = {
 				m.emmiter.setXSpeed(-2, 2);
 			}
 			if(m.enabled){
-				m.emmiter.start(false,500,null,50+parseInt(Math.random()*5));
+				m.emmiter.start(false,2000,null,1000+parseInt(Math.random()*5));
 			}else{
 				m.emmiter.kill();
 			}
 		}
+		self.socket
 	},
 	preload: function() {
 		var self = this;
@@ -106,7 +109,7 @@ var candies = {
 		
 		self.game.load.image('waterdrop', 'images/waterdrop.png');
 		self.game.load.image('stars', 'images/stars.png');
-		self.game.load.image('fire', 'images/fire.png');
+		self.game.load.image('fire', 'images/flametongue.png');
 		self.game.load.spritesheet('Button', 'images/wallswitchanime.png', 64, 100);
 		
     	self.game.load.tileset('tiles', 'tilemaps/tileset.png', 64, 64);
@@ -128,7 +131,7 @@ var candies = {
 						var m = new Marker(self.game,ttt.x,ttt.y,ttt.width,ttt.height,a[0],a[1],a[0].match("!") ? false:true);
 						self.markers.push(m);
 						a[0] = a[0].replace("!","");
-						if(a[0] == "teleport"){
+						if(a[0] == "teleport" || a[0] == "fire"){
 							self.teleports[a[1]] = m;
 						}
 						if(a[0] == "target" && a[1]){
