@@ -7,8 +7,15 @@ Behaviors = {
 			player.body.collideWorldBounds = false;
 		}
 	},
-	
+	"fire": function(world,marker,player,arg){
+		particleBurn(player.x+50,player.y+100);
+		if (player.own) {
+			restart();
+		}
+	},
 	"button": function(world,marker,player,arg){
+		marker.enabled = marker.enabled ? false:true;
+		marker.animations.play(this.enabled ? 'on' : 'off')
 		if(world.targets[marker.target]){
 			var m = world.teleports[marker.target];
 			if(m){
@@ -21,11 +28,14 @@ Behaviors = {
 	"teleport": function(world,marker,player,arg){
 		var m = marker;
 		if(world.targets[marker.target] && marker.enabled){
-			particleStars(player.x,player.y);
-
+			
 			if (player.own) {
 				player.x = world.targets[marker.target].x;
 				player.y = world.targets[marker.target].y;
+				particleStars(player.x,player.y);
+			}else{
+				particleStars(world.targets[marker.target].x,world.targets[marker.target].y);
+			
 			}
 		}
 	},
@@ -66,12 +76,19 @@ Marker = function (game, x, y, width,height,name,target,enabled){
 	this.enabled = enabled;
 	this.body.x = x;
 	this.body.y = y;
-	this.body.customSeparateX = true;
-	this.body.customSeparateY = true;
 	this.body.width = width;
 	this.body.height = height;
 	this.body.collideWorldBounds = false;
 	this.body.immovable = true;
+	if(name=="button"){
+		this.animations.add('on', [0]);
+		this.animations.add('off', [1]);
+		this.animations.play(this.enabled ? 'on' : 'off')
+	}else{
+		this.body.customSeparateX = true;
+		this.body.customSeparateY = true;
+	}
+	
 };
 
 Marker.prototype = Object.create(Phaser.Sprite.prototype);
