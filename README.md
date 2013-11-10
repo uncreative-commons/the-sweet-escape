@@ -7,7 +7,7 @@ phaser.js for rendering. Tilemaps edited with tiled, artwork mostly created in P
 
 The general gameplay idea is cooperative platformer/puzzle solving with friends or other internet anons.
 
-It is running live @ http://uncreative.korny.cc/. iOS & android are actually supported, 
+It is running live @ http://uncreative.korny.cc/. iOS & android are also supported, 
 with Onscreen controls, but there might be some scaling issues.
 
 
