@@ -22,6 +22,6 @@ Backend / persist logic at [ app.js ](app.js)
 
 Game logic mostly at the [public/javascript/*](public/javascript/) folder
 
-team
+Team
 ====
 skmp ~ programming | skouts ~ graphics | bloomingbridges ~ programming, music | wizgrav ~ programming
