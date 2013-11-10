@@ -135,6 +135,8 @@ var candies = {
     	self.game.load.tileset('tiles', 'tilemaps/tileset.png', 64, 64);
     	var loop = ["audio/loop" + Math.round(Math.random() + 1) + ".mp3"];
        	self.game.load.audio('music', loop);
+       	self.game.load.audio('jump', ['audio/jump.mp3']);
+       	self.game.load.audio('death', ['audio/death.mp3']);
 
 	},
 
@@ -164,8 +166,10 @@ var candies = {
 
 		self.players={};		
 	
+		self.jumpFX = self.game.add.audio('jump');
+		self.deathFX = self.game.add.audio('death');
 		self.music = self.game.add.audio('music');
-    	self.music.play();
+    	self.music.play('', 0, 1, true);
     
 		if (!room_firstRun())
 			self.login();
@@ -344,8 +348,7 @@ var candies = {
 
 				if (jump_button && player.body.touching.down ) {
 					player.body.velocity.y = -650;
-					if (player.playerType === "Pop")
-						player.animations.play((player.facing == Phaser.RIGHT) ? 'jump_right' : 'jump_left');
+					self.jumpFX.play();
 				} 
 			}
 
