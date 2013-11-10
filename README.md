@@ -15,7 +15,4 @@ Assuming you have node.js installed, npm install && npm start should fetch all d
 
 team
 ====
-skmp ~ programming
-skouts ~ graphics
-bloomingbridges ~ programming, music
-wizgrav ~ programming
+skmp ~ programming | skouts ~ graphics | bloomingbridges ~ programming, music | wizgrav ~ programming
