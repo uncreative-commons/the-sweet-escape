@@ -70,8 +70,10 @@ var candies = {
 	},
 	checkTeleports:function(){
 		var self = this;
+		var a=[];
 		for(var i in this.teleports){
 			var m = this.teleports[i];
+			a.push(m.enabled);
 			if(!m.emmiter){
 				m.emmiter = self.game.particles.add(new Phaser.Particles.Arcade.Emitter(self.game, 20, 20, 50));
 				m.emmiter.makeParticles(m.markerName == "teleport" ? "stars":"fire");
@@ -104,7 +106,7 @@ var candies = {
 		self.game.load.tilemap('Room', 'tilemaps/' + room_getId() + '.json', null, Phaser.Tilemap.TILED_JSON);
 		self.game.load.image('waterdrop', 'images/waterdrop.png');
 		self.game.load.image('stars', 'images/stars.png');
-		self.game.load.image('fire', 'images/fire.png');
+		self.game.load.image('fire', 'images/firetongue.png');
 		self.game.load.spritesheet('Button', 'images/wallswitchanime.png', 64, 100);
 		
     	self.game.load.tileset('tiles', 'tilemaps/tileset.png', 64, 64);
@@ -126,7 +128,7 @@ var candies = {
 						var m = new Marker(self.game,ttt.x,ttt.y,ttt.width,ttt.height,a[0],a[1],a[0].match("!") ? false:true);
 						self.markers.push(m);
 						a[0] = a[0].replace("!","");
-						if(a[0] == "teleport"){
+						if(a[0] == "teleport" || a[0] == "fire"){
 							self.teleports[a[1]] = m;
 						}
 						if(a[0] == "target" && a[1]){
