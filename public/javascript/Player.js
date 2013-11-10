@@ -165,7 +165,11 @@ Player.prototype.constructor = Player;
 Player.prototype.die = function() {
 	var sgn=(Math.random() > 0.5 ? -1 : 1);
 
-	this.body.preRotation = 90;
+/*
+	this.body.preRotation = sgn * 90;
+	this.body.preY = this.height/4;
+	this.body.preX = -sgn*this.width/2;
+	*/
 
 	this.dead = true;
 	this.body.collideWorldBounds = false;
