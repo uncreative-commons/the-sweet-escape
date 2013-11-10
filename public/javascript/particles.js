@@ -1,5 +1,5 @@
 	window.particleSplash = function(x,y){
-		var splashEmmiter = CandyConvicts.game.particles.add(new Phaser.Particles.Arcade.Emitter(CandyConvicts.game, 20, 20, 50));
+		var splashEmmiter = candies.game.particles.add(new Phaser.Particles.Arcade.Emitter(candies.game, 20, 20, 50));
 		splashEmmiter.makeParticles("waterdrop");
 		splashEmmiter.gravity=20;
 		splashEmmiter.x = x+75;
@@ -13,7 +13,7 @@
 
 
 	window.particleStars = function(x,y){
-		var splashEmmiter = CandyConvicts.game.particles.add(new Phaser.Particles.Arcade.Emitter(CandyConvicts.game, 20, 20, 50));
+		var splashEmmiter = candies.game.particles.add(new Phaser.Particles.Arcade.Emitter(candies.game, 20, 20, 50));
 		splashEmmiter.makeParticles("stars");
 		splashEmmiter.gravity=10;
 		splashEmmiter.x = x+25;

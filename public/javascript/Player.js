@@ -1,11 +1,13 @@
 Behaviors = {
 	"water": function(world,marker,player,arg){
 		particleSplash(player.x+50,player.y+100);
+		
 		if (player.own) {
 			player.dead = true;
 			player.body.collideWorldBounds = false;
 		}
 	},
+	
 	"button": function(world,marker,player,arg){
 		if(world.targets[marker.target]){
 			var m = world.teleports[marker.target];
@@ -15,17 +17,28 @@ Behaviors = {
 			world.checkTeleports();
 		}
 	},
+	
 	"teleport": function(world,marker,player,arg){
 		var m = marker;
 		if(world.targets[marker.target] && marker.enabled){
-			player.x = world.targets[marker.target].x;
-			player.y = world.targets[marker.target].y;
 			particleStars(player.x,player.y);
+
+			if (player.own) {
+				player.x = world.targets[marker.target].x;
+				player.y = world.targets[marker.target].y;
+			}
 		}
 	},
+	
 	"next": function(world,marker,player,arg){
 		if (player.own) {
-			console.log("OMG WATER!!! NOOOOOOOOOOOOOOOOO")
+			restart(other_room(1));
+		}
+	},
+
+	"prev": function(world,marker,player,arg){
+		if (player.own) {
+			restart(other_room(-1));
 		}
 	}
 }

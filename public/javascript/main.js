@@ -1,5 +1,5 @@
 
-// CandyConvicts ///////////////////////////////////////////////////////////////
+// candies ///////////////////////////////////////////////////////////////
 //	
 //	This is the main game class initialising PIXI and handling the game loop
 //	@bloomingbridges
@@ -7,16 +7,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
-function room_id() {
-	return  parseInt(document.location.href.split("?")[1] || "0");
+function other_room(df) {
+	var id = candies.levels[candies.levels.indexOf(room_getId()) + df];
+	return  document.location.href.split("?")[0] + "?" + id + "?" + candies.players[candies.myId].playerType + "?0";
 }
 
-function next_room() {
-	return  document.location.href.split("?")[0] + "?" + (room_id() + 1) + "?" + CandyConvicts.players[CandyConvicts.myId].playerType + "?0";
-}
-
-function prev_room() {
-	return  document.location.href.split("?")[0] + "?" + (room_id() - 1)+ "?" + CandyConvicts.players[CandyConvicts.myId].playerType + "?1";
+function room_getId() {
+	return  document.location.href.split("?")[1] || "0";
 }
 
 function room_getChar() {
@@ -29,30 +26,29 @@ function room_getSpawnPos() {
 
 //http://192.168.2.64
 function room_url() {
-	return  '/?roomId=' + room_id();	
+	return  '/?roomId=' + room_getId();	
 }
 
 function restart(where) {
-	if (!window.location.asdadasd) {
+	if (!candies.restarting) {
 		if (where)
 			window.location = where;
 		else
 			window.location.reload();
 	}
-	window.location.asdadasd = true;
-	CandyConvicts.restarting = true;
+	candies.restarting = true;
 }
 
-var CandyConvicts = {
+var candies = {
 
 	container: {},
 	game: {},
-	player: {},
 	cursors: {},
 	markers:[],
 	floor: {},
 	teleports:{},
 	targets:{},
+	levels: ["0", "1", "2"],
 
 	preinit: function(container) {
 
@@ -93,7 +89,7 @@ var CandyConvicts = {
 	},
 	preload: function() {
 		var self = this;
-		$.getJSON('tilemaps/' + room_id() + '.json',function(data){
+		$.getJSON('tilemaps/' + room_getId() + '.json',function(data){
 			for(var i=0;i!= data.layers.length;i++){
 				var dl = data.layers[i];
 				if(dl.objects){
@@ -124,7 +120,7 @@ var CandyConvicts = {
 		$.ajax({url: "tilemaps/1b.json", dataType: "json"}).done(function(data) {
 			//_.where(data.layers, { type:"objectgroup"});
 		});
-		self.game.load.tilemap('Room', 'tilemaps/' + room_id() + '.json', null, Phaser.Tilemap.TILED_JSON);
+		self.game.load.tilemap('Room', 'tilemaps/' + room_getId() + '.json', null, Phaser.Tilemap.TILED_JSON);
 		self.game.load.image('waterdrop', 'images/waterdrop.png');
 		self.game.load.image('stars', 'images/stars.png');
 		
@@ -140,11 +136,11 @@ var CandyConvicts = {
 		
 		console.log("### GAME CREATED!");
 
-		$("#loading").remove();
+		$("#loading").hide();
 		
 		// self.game.stage.backgroundColor = '#F8CA00';
 
-		var background = self.game.add.sprite(0, 0, 'TestBackground');
+		self.background = self.game.add.sprite(0, 0, 'TestBackground');
 
 		self.currentRoom = self.game.add.tilemap('Room');
 		self.tileset = self.game.add.tileset('tiles');
@@ -239,7 +235,7 @@ var CandyConvicts = {
 	update: function() {
 
 		var self = this;
-
+		self.background.x = Math.max(0,self.game.camera.x/2);
 		
 
 		// Handling Player Movement ////////////////////////////////////////////
@@ -250,7 +246,7 @@ var CandyConvicts = {
 
 			if (player.dead) {
 				player.body.velocity.x = 0;
-				if ((player.body.bottom - CandyConvicts.tileLayer.height) > player.height*1.2 ) {
+				if ((player.body.bottom - candies.tileLayer.height) > player.height*1.2 ) {
 					restart();
 				}
 			}
@@ -261,14 +257,15 @@ var CandyConvicts = {
 				if (self.restarting)
 					return;
 
-
+/*
 				if ( (player.x +player.width*1.2) > self.tileLayer.width) {
 					restart(next_room());
 				}
 
-				if ( room_id() != 0 && (player.x - player.width*0.2 ) < 0) {
+				if ( room_getId() != 0 && (player.x - player.width*0.2 ) < 0) {
 					restart(prev_room());
 				}
+				*/
 
 				_.each(self.players, function(v) {
 					if (player != v) {
@@ -333,7 +330,7 @@ var CandyConvicts = {
 //	This is the main entry point for the game
 
 $(function($) {
-	CandyConvicts.preinit($("#stageContainer"));
+	candies.preinit($("#stageContainer"));
 	$(window).on('keyup', function(event) {
 		// console.log(event.keyCode);
 		if (event.keyCode == 32) {
