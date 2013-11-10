@@ -32,6 +32,16 @@ function room_url() {
 	return  '/?roomId=' + room_id();	
 }
 
+function restart(where) {
+	if (!window.location.asdadasd) {
+		if (where)
+			window.location = where;
+		else
+			window.location.reload();
+	}
+	window.location.asdadasd = true;
+	CandyConvicts.restarting = true;
+}
 
 var CandyConvicts = {
 
@@ -192,8 +202,10 @@ var CandyConvicts = {
 	},
 
 	update: function() {
-		
+
 		var self = this;
+
+		
 
 		// Handling Player Movement ////////////////////////////////////////////
 
@@ -203,23 +215,24 @@ var CandyConvicts = {
 
 			if (player.dead) {
 				player.body.velocity.x = 0;
-				if (Math.abs(player.body.bottom - CandyConvicts.tileLayer.height) < 10) {
-					window.location.reload();
-					self.game.destroy();
+				if ((player.body.bottom - CandyConvicts.tileLayer.height) > player.height*1.2 ) {
+					restart();
 				}
 			}
 			else {
+
 				self.game.physics.collide(player, self.tileLayer);
+
+				if (self.restarting)
+					return;
 
 
 				if ( (player.x +player.width*1.2) > self.tileLayer.width) {
-					document.location = next_room();
-					window.setTimeout(function() { self.game.destroy(); }, 0);
+					restart(next_room());
 				}
 
 				if ( room_id() != 0 && (player.x - player.width*0.2 ) < 0) {
-					document.location = prev_room();
-					window.setTimeout(function() { self.game.destroy(); }, 0);
+					restart(prev_room());
 				}
 
 				_.each(self.players, function(v) {
