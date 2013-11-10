@@ -1,28 +1,40 @@
 Behaviors = {
 	"water": function(world,marker,player,arg){
 		particleSplash(player.x+50,player.y+100);
-		player.dead = true;
+		if (player.own) {
+			player.dead = true;
+			player.body.collideWorldBounds = false;
+		}
 	},
 	"button": function(world,marker,player,arg){
-		
+		if(world.targets[marker.target]){
+			var m = world.teleports[marker.target];
+			if(m){
+				m.enabled = m.enabled ? false:true;
+			}
+			world.checkTeleports();
+		}
 	},
 	"teleport": function(world,marker,player,arg){
-		if(world.target){
-			particleStars(player.x,player.y);
-			player.x = world.target.x;
-			player.y = world.target.y;
+		var m = marker;
+		if(world.targets[marker.target] && marker.enabled){
+			player.x = world.targets[marker.target].x;
+			player.y = world.targets[marker.target].y;
 			particleStars(player.x,player.y);
 		}
 	},
 	"next": function(world,marker,player,arg){
-		console.log("OMG WATER!!! NOOOOOOOOOOOOOOOOO");
+		if (player.own) {
+			console.log("OMG WATER!!! NOOOOOOOOOOOOOOOOO")
+		}
 	}
 }
 
-Marker = function (game, x, y, width,height,name,extra){
+Marker = function (game, x, y, width,height,name,target,enabled){
 	Phaser.Sprite.call(this, game, x, y,"Boogie");
 	this.markerName = name;
-	this.extra = extra;
+	this.target = target;
+	this.enabled = enabled;
 	this.body.x = x;
 	this.body.y = y;
 	this.body.customSeparateX = true;

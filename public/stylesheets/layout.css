@@ -64,6 +64,16 @@ h1 {
 	font-family: 'Emilys Candy', "Helvetica Neue", "Arial", sans-serif;
 }
 
+#loading {
+	font-size: 5em;
+	position: fixed;
+	background: black;
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+}
+
 footer {
 	color: #F8CA00;
 	text-align: center;

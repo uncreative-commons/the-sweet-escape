@@ -32,6 +32,16 @@ function room_url() {
 	return  '/?roomId=' + room_id();	
 }
 
+function restart(where) {
+	if (!window.location.asdadasd) {
+		if (where)
+			window.location = where;
+		else
+			window.location.reload();
+	}
+	window.location.asdadasd = true;
+	CandyConvicts.restarting = true;
+}
 
 var CandyConvicts = {
 
@@ -41,8 +51,8 @@ var CandyConvicts = {
 	cursors: {},
 	markers:[],
 	floor: {},
-	teleport:false,
-	target:false,
+	teleports:{},
+	targets:{},
 
 	preinit: function(container) {
 
@@ -58,8 +68,29 @@ var CandyConvicts = {
 		);
 
 	},
-
-
+	checkTeleports:function(){
+		var self = this;
+		for(var i in this.teleports){
+			var m = this.teleports[i];
+			if(!m.emmiter){
+				m.emmiter = self.game.particles.add(new Phaser.Particles.Arcade.Emitter(self.game, 20, 20, 50));
+				m.emmiter.makeParticles("stars");
+				m.emmiter.gravity=10;
+				m.emmiter.x = m.x;
+				m.emmiter.y = m.y;
+				m.emmiter.width = m.width;
+				m.emmiter.height = 20;
+				m.emmiter.minParticleSpeed = new Phaser.Point(-100, -100);
+				m.emmiter.setXSpeed(-2, 2);
+			}
+			
+			if(m.enabled){
+				m.emmiter.start(false,500,null,50+parseInt(Math.random()*5));
+			}else{
+				m.emmiter.kill();
+			}
+		}
+	},
 	preload: function() {
 		var self = this;
 		$.getJSON('tilemaps/' + room_id() + '.json',function(data){
@@ -69,11 +100,15 @@ var CandyConvicts = {
 					for(var j=0;j!= dl.objects.length;j++){
 						var ttt = dl.objects[j];
 						var a = ttt.name.split("#");
-						var m = new Marker(self.game,ttt.x,ttt.y,ttt.width,ttt.height,a[0],a[1]);
+						var m = new Marker(self.game,ttt.x,ttt.y,ttt.width,ttt.height,a[0],a[1],a[0].match("!") ? false:true);
 						self.markers.push(m);
-						if(a[0] == "teleport") self.teleport = m;
-						if(a[0] == "target") self.target = m;
-						
+						a[0] = a[0].replace("!","");
+						if(a[0] == "teleport"){
+							self.teleports[a[1]] = m;
+						}
+						if(a[0] == "target" && a[1]){
+							self.targets[a[1]] = m;
+						}
 					}
 				}
 			}
@@ -102,8 +137,10 @@ var CandyConvicts = {
 	create: function() {
 
 		var self = this;
-
+		
 		console.log("### GAME CREATED!");
+
+		$("#loading").remove();
 		
 		// self.game.stage.backgroundColor = '#F8CA00';
 
@@ -125,6 +162,7 @@ var CandyConvicts = {
 		self.jumpButton = self.game.input.keyboard.addKey(Phaser.Keyboard.X);
 
 		self.players={};
+		self.checkTeleports();
 
 		var socket = self.socket = io.connect(room_url());
 
@@ -144,7 +182,7 @@ var CandyConvicts = {
 
 			player.facing = begg ? Phaser.RIGHT : Phaser.LEFT;
 		});
-
+	
 		socket.on('heartbeat', function (seq) {
 			//handle stuff here
 			
@@ -192,15 +230,17 @@ var CandyConvicts = {
 		socket.on('behavior', function (data) {
 			var player = self.players[data.id];
 			if (player) {
-				Behaviors[data.name](self.game,data.marker,player);
+				Behaviors[data.name](self,data.marker,player);
 		    }
 		});
 		
 	},
 
 	update: function() {
-		
+
 		var self = this;
+
+		
 
 		// Handling Player Movement ////////////////////////////////////////////
 
@@ -210,23 +250,24 @@ var CandyConvicts = {
 
 			if (player.dead) {
 				player.body.velocity.x = 0;
-				if (Math.abs(player.body.bottom - CandyConvicts.tileLayer.height) < 10) {
-					window.location.reload();
-					self.game.destroy();
+				if ((player.body.bottom - CandyConvicts.tileLayer.height) > player.height*1.2 ) {
+					restart();
 				}
 			}
 			else {
+
 				self.game.physics.collide(player, self.tileLayer);
+
+				if (self.restarting)
+					return;
 
 
 				if ( (player.x +player.width*1.2) > self.tileLayer.width) {
-					document.location = next_room();
-					window.setTimeout(function() { self.game.destroy(); }, 0);
+					restart(next_room());
 				}
 
 				if ( room_id() != 0 && (player.x - player.width*0.2 ) < 0) {
-					document.location = prev_room();
-					window.setTimeout(function() { self.game.destroy(); }, 0);
+					restart(prev_room());
 				}
 
 				_.each(self.players, function(v) {
@@ -239,7 +280,7 @@ var CandyConvicts = {
 					self.game.physics.collide(v, player,function(){
 						var a = v.markerName.split("#");
 						if(Behaviors[v.markerName]){
-							Behaviors[v.markerName](self.game,v,player);
+							Behaviors[v.markerName](self,v,player);
 							self.socket.emit("behavior",{name:a[0],id:self.myId,marker:{x:v.x,y:v.y,width:v.width,height:v.height}});
 						}
 					});

@@ -51,8 +51,8 @@
                  "type":"",
                  "visible":true,
                  "width":321,
-                 "x":959,
-                 "y":571
+                 "x":928,
+                 "y":570
                 }, 
                 {
                  "height":381,
@@ -79,6 +79,45 @@
                  "width":68,
                  "x":1600,
                  "y":130
+                }, 
+                {
+                 "height":49,
+                 "name":"button#t1",
+                 "properties":
+                    {
+
+                    },
+                 "type":"",
+                 "visible":true,
+                 "width":63,
+                 "x":897,
+                 "y":388
+                }, 
+                {
+                 "height":32,
+                 "name":"teleport#t1",
+                 "properties":
+                    {
+
+                    },
+                 "type":"",
+                 "visible":true,
+                 "width":47,
+                 "x":1324,
+                 "y":520
+                }, 
+                {
+                 "height":78,
+                 "name":"target#t1",
+                 "properties":
+                    {
+
+                    },
+                 "type":"",
+                 "visible":true,
+                 "width":88,
+                 "x":466,
+                 "y":187
                 }],
          "opacity":1,
          "type":"objectgroup",
