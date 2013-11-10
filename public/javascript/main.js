@@ -52,7 +52,7 @@ var candies = {
 	floor: {},
 	teleports:{},
 	targets:{},
-	levels: ["0", "1", "2", "3", "4"],
+	levels: ["0", "1", "2", "3", "4", "5"],
 
 	preinit: function(container) {
 
