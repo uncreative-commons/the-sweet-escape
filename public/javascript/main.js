@@ -68,6 +68,17 @@ var candies = {
 		);
 
 	},
+	checkEnabled: function(){
+		var self=this;
+		if(self.enabled){
+			for(var i in self.enabled){
+				if(self.teleports[i])
+					self.teleports[i].enabled = self.enabled[i];
+			};
+			self.enabled=false;
+		}
+		
+	},
 	checkTeleports:function(){
 		var self = this;
 		var a=[];
@@ -91,7 +102,7 @@ var candies = {
 				m.emmiter.kill();
 			}
 		}
-		self.socket
+		self.socket.emit("enabled",a);
 	},
 	preload: function() {
 		var self = this;
@@ -121,28 +132,7 @@ var candies = {
 	create: function() {
 		var self = this;
 		
-		$.getJSON('tilemaps/' + room_getId() + '.json',function(data){
-			for(var i=0;i!= data.layers.length;i++){
-				var dl = data.layers[i];
-				if(dl.objects){
-					for(var j=0;j!= dl.objects.length;j++){
-						var ttt = dl.objects[j];
-						var a = ttt.name.split("#");
-						var m = new Marker(self.game,ttt.x,ttt.y,ttt.width,ttt.height,a[0],a[1],a[0].match("!") ? false:true);
-						self.markers.push(m);
-						a[0] = a[0].replace("!","");
-						if(a[0] == "teleport" || a[0] == "fire"){
-							self.teleports[a[1]] = m;
-						}
-						if(a[0] == "target" && a[1]){
-							self.targets[a[1]] = m;
-						}
-					}
-				}
-			}
-			self.checkTeleports();
 		
-		})
 		
 		console.log("### GAME CREATED!");
 
@@ -203,6 +193,35 @@ var candies = {
 		socket.on('heartbeat', function (seq) {
 			//handle stuff here
 			COUNT = seq;
+		});
+		
+		socket.on('enabled', function (data) {
+			//handle stuff here
+			console.log(data);
+			self.enabled = data;
+			$.getJSON('tilemaps/' + room_getId() + '.json',function(data){
+				for(var i=0;i!= data.layers.length;i++){
+					var dl = data.layers[i];
+					if(dl.objects){
+						for(var j=0;j!= dl.objects.length;j++){
+							var ttt = dl.objects[j];
+							var a = ttt.name.split("#");
+							var m = new Marker(self.game,ttt.x,ttt.y,ttt.width,ttt.height,a[0],a[1],a[0].match("!") ? false:true);
+							self.markers.push(m);
+							a[0] = a[0].replace("!","");
+							if(a[0] == "teleport" || a[0] == "fire"){
+								self.teleports[a[1]] = m;
+							}
+							if(a[0] == "target" && a[1]){
+								self.targets[a[1]] = m;
+							}
+						}
+					}
+				}
+				self.checkEnabled();
+				self.checkTeleports();
+		
+			})
 		});
   
 		socket.on('state', function (data) {

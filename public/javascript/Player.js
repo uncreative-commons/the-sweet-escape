@@ -24,6 +24,9 @@ Behaviors = {
 			}
 			world.checkTeleports();
 		}
+		var s = {};
+		s[marker.target] = world.teleports[marker.target].enabled;
+		world.socket.emit("enabled",s);
 	},
 	
 	"teleport": function(world,marker,player,arg){
@@ -71,7 +74,6 @@ Behaviors = {
 }
 
 Marker = function (game, x, y, width,height,name,target,enabled){
-	console.log(arguments);
 	Phaser.Sprite.call(this, game, x, y,"Button");
 	this.markerName = name;
 	this.target = target;
