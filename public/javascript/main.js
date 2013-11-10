@@ -107,6 +107,8 @@ var CandyConvicts = {
 		var self = this;
 
 		console.log("### GAME CREATED!");
+
+		$("#loading").remove();
 		
 		// self.game.stage.backgroundColor = '#F8CA00';
 
