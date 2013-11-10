@@ -66,9 +66,9 @@ io.sockets.on('connection', function (socket) {
   var sid = socket.id;
   room.clients[sid]={};
   socket.emit('whoami', sid);
-  socket.emit('state', room.clients);
   socket.emit('objects', room.objects);
   socket.emit('enabled', room.enabled);
+  socket.emit('state', room.clients);
   
   socket.on('change', function (data) {
 	var t = {};
