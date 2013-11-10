@@ -5,7 +5,7 @@
 //	@bloomingbridges
 //
 ////////////////////////////////////////////////////////////////////////////////
-
+var COUNT=0;
 
 function other_room(df) {
 	var id = candies.levels[candies.levels.indexOf(room_getId()) + df];
@@ -74,7 +74,7 @@ var candies = {
 			var m = this.teleports[i];
 			if(!m.emmiter){
 				m.emmiter = self.game.particles.add(new Phaser.Particles.Arcade.Emitter(self.game, 20, 20, 50));
-				m.emmiter.makeParticles(m.name == "teleport" ? "stars":"fire");
+				m.emmiter.makeParticles(m.markerName == "teleport" ? "stars":"fire");
 				m.emmiter.gravity=10;
 				m.emmiter.x = m.x;
 				m.emmiter.y = m.y;
@@ -83,7 +83,6 @@ var candies = {
 				m.emmiter.minParticleSpeed = new Phaser.Point(-100, -100);
 				m.emmiter.setXSpeed(-2, 2);
 			}
-			
 			if(m.enabled){
 				m.emmiter.start(false,500,null,50+parseInt(Math.random()*5));
 			}else{
@@ -106,7 +105,7 @@ var candies = {
 		self.game.load.image('waterdrop', 'images/waterdrop.png');
 		self.game.load.image('stars', 'images/stars.png');
 		self.game.load.image('fire', 'images/fire.png');
-		self.game.load.spritesheet('Button', 'images/button.png', 64, 100);
+		self.game.load.spritesheet('Button', 'images/wallswitchanime.png', 64, 100);
 		
     	self.game.load.tileset('tiles', 'tilemaps/tileset.png', 64, 64);
     	// self.game.load.audio('music', 'audio/two.mp3');
@@ -136,6 +135,8 @@ var candies = {
 					}
 				}
 			}
+			self.checkTeleports();
+		
 		})
 		
 		console.log("### GAME CREATED!");
@@ -163,7 +164,6 @@ var candies = {
 		self.jumpButton = self.game.input.keyboard.addKey(Phaser.Keyboard.X);
 
 		self.players={};
-		self.checkTeleports();
 		
 		if (!room_firstRun())
 			self.login();
@@ -195,7 +195,7 @@ var candies = {
 	
 		socket.on('heartbeat', function (seq) {
 			//handle stuff here
-			
+			COUNT = seq;
 		});
   
 		socket.on('state', function (data) {

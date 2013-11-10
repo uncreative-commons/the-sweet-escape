@@ -14,8 +14,10 @@ Behaviors = {
 		}
 	},
 	"button": function(world,marker,player,arg){
+		if(marker.count && COUNT - marker.count < 2) return;
+		marker.count = COUNT;
 		marker.enabled = marker.enabled ? false:true;
-		marker.animations.play(this.enabled ? 'on' : 'off')
+		marker.animations.play(marker.enabled ? 'on' : 'off')
 		if(world.targets[marker.target]){
 			var m = world.teleports[marker.target];
 			if(m){
@@ -70,7 +72,8 @@ Behaviors = {
 }
 
 Marker = function (game, x, y, width,height,name,target,enabled){
-	Phaser.Sprite.call(this, game, x, y,"Boogie");
+	console.log(arguments);
+	Phaser.Sprite.call(this, game, x, y,"Button");
 	this.markerName = name;
 	this.target = target;
 	this.enabled = enabled;
@@ -84,10 +87,11 @@ Marker = function (game, x, y, width,height,name,target,enabled){
 		this.animations.add('on', [0]);
 		this.animations.add('off', [1]);
 		this.animations.play(this.enabled ? 'on' : 'off')
-	}else{
+		game.add.existing(this);
+	}
+	
 		this.body.customSeparateX = true;
 		this.body.customSeparateY = true;
-	}
 	
 };
 
