@@ -5,7 +5,7 @@ html {
 
 body {
 	color: #E97F02;
-	font-family: 'Emilys Candy', "Helvetica Neue", monospace;
+	font-family: 'helsinkiregular', 'Emilys Candy', "Helvetica Neue", monospace;
 	font-size: 12px;
 	text-align: center;
 	background-color: black;
@@ -40,7 +40,7 @@ h1 {
 
 #container {
 	color: #BD1550;
-	background-color: #C0A8BB;
+	background-color: #FFF;
 	width: 100%;
 	height: 4em;
 	border-bottom: 2px solid #DDD/*490A3D*/;
@@ -73,7 +73,7 @@ h1 {
 
 #content p {
 	color: white;
-	font-family: 'Emilys Candy', "Helvetica Neue", "Arial", sans-serif;
+	font-family: 'helsinkiregular', 'Emilys Candy', "Helvetica Neue", "Arial", sans-serif;
 }
 
 #loading {
@@ -112,6 +112,6 @@ footer a#uc_logo {
 	}
 	h1 {
 		font-size: 1em;
-		margin: 0.5em auto 0 auto;
+		margin: 1em auto 0 auto;
 	}
 }
