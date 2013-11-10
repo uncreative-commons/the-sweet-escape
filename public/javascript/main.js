@@ -248,12 +248,12 @@ var CandyConvicts = {
 					if (player.playerType === "Pop")
 						player.animations.play((player.facing == Phaser.RIGHT) ? 'jump_right' : 'jump_left');
 				} 
-
-				var datum = {x: player.x | 0, y: player.y | 0, animation: player.animations.currentAnim.name, type: player.playerType};
-				if (!_.isEqual(datum, self.old_emit))
-					self.socket.emit("change", datum);
-				self.old_emit = datum;
 			}
+
+			var datum = {x: player.x | 0, y: player.y | 0, animation: player.animations.currentAnim.name, type: player.playerType};
+			if (!_.isEqual(datum, self.old_emit))
+				self.socket.emit("change", datum);
+			self.old_emit = datum;
 		}
 
 	},
