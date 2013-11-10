@@ -119,3 +119,22 @@ footer a#uc_logo {
 		margin: 1em auto 0 auto;
 	}
 }
+
+#loading {
+	background: url('../images/logo.jpg') center center;
+	background-size: cover;
+}
+
+#loading h1 {
+	font-size: 0.7em;
+	margin-top:-0.1em;
+	display: none;
+}
+
+#loading h2 {
+	font-size:1em;
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0.7cm;
+}
