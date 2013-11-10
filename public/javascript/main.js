@@ -77,7 +77,7 @@ var candies = {
 			if(!m.emmiter){
 				m.emmiter = self.game.particles.add(new Phaser.Particles.Arcade.Emitter(self.game, 20, 20, 50));
 				m.emmiter.makeParticles(m.markerName == "teleport" ? "stars":"fire");
-				m.emmiter.gravity=m.markerName == "teleport" ? 10:1;
+				m.emmiter.gravity=m.markerName == "teleport" ? 10:-5;
 				m.emmiter.x = m.x;
 				m.emmiter.y = m.y;
 				m.emmiter.width = m.width;
