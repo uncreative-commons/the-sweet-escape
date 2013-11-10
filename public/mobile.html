@@ -23,7 +23,7 @@
 			<a href="/about.html" id="uc_logo" title="UNCREATIVE COMMONS">UNCREATIVE COMMONS</a>
 		</footer>
 
-<div style="
+<div id="keys" style="
 ">
   <div id="left" style="
     position: fixed;
@@ -69,27 +69,35 @@
 		<script src="javascript/main.js" type="text/javascript"></script>
 		<script src="javascript/particles.js" type="text/javascript"></script>
 		<script>
-			function eh(ev) {
-				ev.preventDefault();
-				var td = window.touches[ev.target.id] = (ev.type == "touchend" || ev.type == "mouseup") ? false : true;
-				$(ev.target).css({opacity: (td ? 0.6 : 0.2) });
-			}
-			window.touches={};
-			$('#left').on('touchstart',eh);
-			$('#right').on('touchstart',eh);
-			$('#jump').on('touchstart',eh);
-			//$('#right').on('touchmove',eh);
-			$('#left').on('touchend',eh);
-			$('#right').on('touchend',eh);
-			$('#jump').on('touchend',eh);
+			$('#keys').hide();
+			function ena() {
+				$('#keys').show();
+				function eh(ev) {
+					ev.preventDefault();
+					var td = window.touches[ev.target.id] = (ev.type == "touchend" || ev.type == "mouseup") ? false : true;
+					$(ev.target).css({opacity: (td ? 0.6 : 0.2) });
+				}
+				$('#left').on('touchstart',eh);
+				$('#right').on('touchstart',eh);
+				$('#jump').on('touchstart',eh);
+				//$('#right').on('touchmove',eh);
+				$('#left').on('touchend',eh);
+				$('#right').on('touchend',eh);
+				$('#jump').on('touchend',eh);
 
-			$('#left').on('mousedown',eh);
-			$('#right').on('mousedown',eh);
-			$('#jump').on('mousedown',eh);
-			//$('#right').on('mousemove',eh);
-			$('#left').on('mouseup',eh);
-			$('#right').on('mouseup',eh);
-			$('#jump').on('mouseup',eh);
+				$('#left').on('mousedown',eh);
+				$('#right').on('mousedown',eh);
+				$('#jump').on('mousedown',eh);
+				//$('#right').on('mousemove',eh);
+				$('#left').on('mouseup',eh);
+				$('#right').on('mouseup',eh);
+				$('#jump').on('mouseup',eh);
+
+				$('body').off("touchstart", ena);
+				$('body').off("mousedown", ena);
+			};
+			$('body').on("touchstart", ena);
+			$('body').on("mousedown", ena);
 		</script>
 
 	</body>
