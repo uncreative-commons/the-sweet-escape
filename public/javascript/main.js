@@ -133,8 +133,8 @@ var candies = {
 		self.game.load.spritesheet('Button', 'images/wallswitchanime.png', 64, 100);
 		
     	self.game.load.tileset('tiles', 'tilemaps/tileset.png', 64, 64);
-    	// self.game.load.audio('music', 'audio/two.mp3');
-    	//self.game.load.audio('music', ['audio/Dig_Up_Her_Bones.mp3']);
+    	var loop = ["audio/loop" + Math.round(Math.random() + 1) + ".mp3"];
+       	self.game.load.audio('music', loop);
 
 	},
 
@@ -159,16 +159,14 @@ var candies = {
 		self.tileLayer.fixedToCamera = false;
 		self.tileLayer.resizeWorld();
 
-		/*
-			self.music = self.game.add.audio('music');
-	    	self.music.play();
-	    */
-
 		self.cursors = self.game.input.keyboard.createCursorKeys();
 		self.jumpButton = self.game.input.keyboard.addKey(Phaser.Keyboard.X);
 
-		self.players={};
-		
+		self.players={};		
+	
+		self.music = self.game.add.audio('music');
+    	self.music.play();
+    
 		if (!room_firstRun())
 			self.login();
 
