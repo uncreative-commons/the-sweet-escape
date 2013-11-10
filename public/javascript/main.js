@@ -52,7 +52,7 @@ var candies = {
 	floor: {},
 	teleports:{},
 	targets:{},
-	levels: ["0", "1", "2", "3", "4"],
+	levels: ["0", "1", "2", "3", "4", "party"],
 
 	preinit: function(container) {
 
@@ -94,14 +94,16 @@ var candies = {
 		var self = this;
 		console.log("### PRELOADING..");
 
-		self.game.load.image('TestBackground', 'tilemaps/background1.jpg');
+		self.game.load.image('TestBackground', 'images/background-' + room_getId() + '.jpg');
 		self.game.load.spritesheet('Pop', 'images/PopSprite.png', 195, 200);
 
 		self.game.load.spritesheet('Boogie', 'images/BoogieSprite.png', 100, 150);
 		$.ajax({url: "tilemaps/1b.json", dataType: "json"}).done(function(data) {
 			//_.where(data.layers, { type:"objectgroup"});
 		});
+
 		self.game.load.tilemap('Room', 'tilemaps/' + room_getId() + '.json', null, Phaser.Tilemap.TILED_JSON);
+		
 		self.game.load.image('waterdrop', 'images/waterdrop.png');
 		self.game.load.image('stars', 'images/stars.png');
 		self.game.load.image('fire', 'images/fire.png');
