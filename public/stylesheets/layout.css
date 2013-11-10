@@ -94,7 +94,7 @@ footer {
 	color: #F8CA00;
 	text-align: center;
 	width: 100%;
-	height: 64px;
+	height: 96px;
 	position: fixed;
 	left: 0;
 	bottom: 0;
@@ -121,7 +121,7 @@ footer a#uc_logo {
 }
 
 #loading {
-	background: url('../images/logo.jpg') center center;
+	background: url('http://aegeus.korny.cc/logo.jpg') center center;
 	background-size: cover;
 }
 
@@ -138,3 +138,8 @@ footer a#uc_logo {
 	right: 0;
 	bottom: 0.7cm;
 }
+
+a:link {color:#E97F02;}      /* unvisited link */
+a:visited {color:#E97F02;}  /* visited link */
+a:hover {color:#E97F02;}  /* mouse over link */
+a:active {color:#E97F02;}
