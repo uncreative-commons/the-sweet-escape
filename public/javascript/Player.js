@@ -7,6 +7,7 @@ Behaviors = {
 		}
 	},
 	"fire": function(world,marker,player,arg){
+		if(!marker.enabled) return;
 		particleBurn(player.x+50,player.y+100);
 		if (player.own) {
 			player.die();
@@ -17,13 +18,11 @@ Behaviors = {
 		marker.count = COUNT;
 		marker.enabled = marker.enabled ? false:true;
 		marker.animations.play(marker.enabled ? 'on' : 'off')
-		if(world.targets[marker.target]){
 			var m = world.teleports[marker.target];
 			if(m){
 				m.enabled = m.enabled ? false:true;
 			}
 			world.checkTeleports();
-		}
 		var s = {};
 		s[marker.target] = world.teleports[marker.target].enabled;
 		world.socket.emit("enabled",s);
