@@ -36,11 +36,27 @@ Behaviors = {
 		}
 	},
 
-	"prev": function(world,marker,player,arg){
+	"prev": function(world,marker,player,arg) {
 		if (player.own) {
 			restart(other_room(-1));
 		}
-	}
+	},
+
+	"overlay": function(world,marker,player,arg) {
+		if (player.own) {
+			var id = marker.target.split(",");
+
+			var $el = $("#" + id[0]);
+
+			var secs = (id[1] || 10);
+			
+			$el.show();
+
+			window.setTimeout(function() {
+				$el.hide();
+			}, secs*1000);
+		}
+	},
 }
 
 Marker = function (game, x, y, width,height,name,target,enabled){
@@ -56,7 +72,6 @@ Marker = function (game, x, y, width,height,name,target,enabled){
 	this.body.height = height;
 	this.body.collideWorldBounds = false;
 	this.body.immovable = true;
-	
 };
 
 Marker.prototype = Object.create(Phaser.Sprite.prototype);

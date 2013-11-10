@@ -12,6 +12,10 @@ function other_room(df) {
 	return  document.location.href.split("?")[0] + "?" + id + "?" + candies.players[candies.myId].playerType + "?0";
 }
 
+function room_firstRun() {
+	return  document.location.href.indexOf("?") == -1;
+}
+
 function room_getId() {
 	return  document.location.href.split("?")[1] || "0";
 }
@@ -137,6 +141,7 @@ var candies = {
 		console.log("### GAME CREATED!");
 
 		$("#loading").hide();
+		$("body").addClass("level-" + room_getId());
 		
 		// self.game.stage.backgroundColor = '#F8CA00';
 
@@ -159,6 +164,15 @@ var candies = {
 
 		self.players={};
 		self.checkTeleports();
+		
+		if (!room_firstRun())
+			self.login();
+
+	},
+
+
+	login: function() {
+		var self = this;
 
 		var socket = self.socket = io.connect(room_url());
 
@@ -223,13 +237,13 @@ var candies = {
 		    }
 			console.log("remove", id);
 		});
+
 		socket.on('behavior', function (data) {
 			var player = self.players[data.id];
 			if (player) {
 				Behaviors[data.name](self,data.marker,player);
 		    }
 		});
-		
 	},
 
 	update: function() {
@@ -237,6 +251,10 @@ var candies = {
 		var self = this;
 		self.background.x = Math.max(0,self.game.camera.x/2);
 		
+		var jump_button = (self.jumpButton.isDown || self.cursors.up.isDown);
+
+		if (!self.socket && jump_button)
+			self.login();
 
 		// Handling Player Movement ////////////////////////////////////////////
 
@@ -256,16 +274,6 @@ var candies = {
 
 				if (self.restarting)
 					return;
-
-/*
-				if ( (player.x +player.width*1.2) > self.tileLayer.width) {
-					restart(next_room());
-				}
-
-				if ( room_getId() != 0 && (player.x - player.width*0.2 ) < 0) {
-					restart(prev_room());
-				}
-				*/
 
 				_.each(self.players, function(v) {
 					if (player != v) {
@@ -289,7 +297,7 @@ var candies = {
 					player.body.velocity.x = (player.facing == Phaser.LEFT) ? -player.movementSpeed : player.movementSpeed;
 					player.animations.play((player.facing == Phaser.RIGHT) ? 'right' : 'left');
 
-					if (!player.body.touching.down && player.body.velocity.y > 0)
+				if (!player.body.touching.down && player.body.velocity.y > 0)
 						player.animations.play((player.facing == Phaser.RIGHT) ? 'jump_right_steady' : 'jump_left_steady');
 				} else {
 					player.body.velocity.x = 0;
@@ -298,7 +306,7 @@ var candies = {
 						player.animations.play((player.facing == Phaser.RIGHT) ? 'idle_right' : 'idle_left');	
 				}
 
-				if ((self.jumpButton.isDown || self.cursors.up.isDown) && player.body.touching.down ) {
+				if (jump_button && player.body.touching.down ) {
 					player.body.velocity.y = -500;
 					if (player.playerType === "Pop")
 						player.animations.play((player.facing == Phaser.RIGHT) ? 'jump_right' : 'jump_left');
