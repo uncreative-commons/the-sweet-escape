@@ -343,7 +343,7 @@ var candies = {
 				}
 
 				if (jump_button && player.body.touching.down ) {
-					player.body.velocity.y = -500;
+					player.body.velocity.y = -650;
 					if (player.playerType === "Pop")
 						player.animations.play((player.facing == Phaser.RIGHT) ? 'jump_right' : 'jump_left');
 				} 
