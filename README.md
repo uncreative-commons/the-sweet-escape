@@ -13,8 +13,14 @@ Mobile devices are also supported, but there might be some scaling issues.
 
 
 How to run it locally
---------------
+---------------------
 Assuming you have node.js installed, npm install && npm start should fetch all deps and run a local instance.
+
+Code structure
+--------------
+Backend / persist logic at [ app.js ](app.js)
+
+Game logic mostly at the [public/javascript/*](public/javascript/) folder
 
 team
 ====
