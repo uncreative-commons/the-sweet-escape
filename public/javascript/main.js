@@ -156,7 +156,7 @@ var candies = {
 		self.players={};		
 	
 		self.music = self.game.add.audio('music');
-    	self.music.play();
+    	self.music.play('', 0, 1, true);
     
 		if (!room_firstRun())
 			self.login();
