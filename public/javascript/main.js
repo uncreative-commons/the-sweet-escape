@@ -17,7 +17,7 @@ function room_firstRun() {
 }
 
 function room_getId() {
-	return  document.location.href.split("?")[1] || "0";
+	return  document.location.href.split("?")[1] || candies.levels[0]	;
 }
 
 function room_getChar() {
@@ -52,7 +52,7 @@ var candies = {
 	floor: {},
 	teleports:{},
 	targets:{},
-	levels: ["0", "1", "2", "3", "4", "5", "party"],
+	levels: ["escape", "waterkills", "teleport", "combitronics", "cojump", "fires", "party"],
 
 	preinit: function(container) {
 
