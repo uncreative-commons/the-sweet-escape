@@ -77,7 +77,7 @@ var candies = {
 			if(!m.emmiter){
 				m.emmiter = self.game.particles.add(new Phaser.Particles.Arcade.Emitter(self.game, 20, 20, 50));
 				m.emmiter.makeParticles(m.markerName == "teleport" ? "stars":"fire");
-				m.emmiter.gravity=10;
+				m.emmiter.gravity=m.markerName == "teleport" ? 10:1;
 				m.emmiter.x = m.x;
 				m.emmiter.y = m.y;
 				m.emmiter.width = m.width;
@@ -86,7 +86,7 @@ var candies = {
 				m.emmiter.setXSpeed(-2, 2);
 			}
 			if(m.enabled){
-				m.emmiter.start(false,500,null,50+parseInt(Math.random()*5));
+				m.emmiter.start(false,2000,null,1000+parseInt(Math.random()*5));
 			}else{
 				m.emmiter.kill();
 			}
