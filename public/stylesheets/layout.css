@@ -34,7 +34,7 @@ h1 {
 	visibility: hidden;
 }
 
-.level-0 #joinMessage {
+.level-escape #joinMessage {
 	visibility: visible;
 }
 

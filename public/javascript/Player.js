@@ -3,14 +3,13 @@ Behaviors = {
 		particleSplash(player.x+50,player.y+100);
 		
 		if (player.own) {
-			player.dead = true;
-			player.body.collideWorldBounds = false;
+			player.die();
 		}
 	},
 	"fire": function(world,marker,player,arg){
 		particleBurn(player.x+50,player.y+100);
 		if (player.own) {
-			restart();
+			player.die();
 		}
 	},
 	"button": function(world,marker,player,arg){
@@ -164,3 +163,16 @@ Player = function (game, x, y, type, own) {
 
 Player.prototype = Object.create(Phaser.Sprite.prototype);
 Player.prototype.constructor = Player;
+
+Player.prototype.die = function() {
+	var sgn=(Math.random() > 0.5 ? -1 : 1);
+
+/*
+	this.body.preRotation = sgn * 90;
+	this.body.preY = this.height/4;
+	this.body.preX = -sgn*this.width/2;
+	*/
+
+	this.dead = true;
+	this.body.collideWorldBounds = false;
+}
