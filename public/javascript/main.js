@@ -278,6 +278,7 @@ var CandyConvicts = {
 				
 				_.each(self.markers, function(v) {
 					self.game.physics.collide(v, player,function(){
+						player.body.touching.down=false;
 						var a = v.markerName.split("#");
 						if(Behaviors[v.markerName]){
 							Behaviors[v.markerName](self,v,player);
