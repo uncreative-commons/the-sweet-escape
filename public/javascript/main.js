@@ -120,7 +120,7 @@ var candies = {
 		self.game.load.image('TestBackground', 'tilemaps/background1.jpg');
 		self.game.load.spritesheet('Pop', 'images/PopSprite.png', 195, 200);
 
-		self.game.load.spritesheet('Boogie', 'images/BoogieSprite2.png', 132, 200);
+		self.game.load.spritesheet('Boogie', 'images/BoogieSprite.png', 100, 150);
 		$.ajax({url: "tilemaps/1b.json", dataType: "json"}).done(function(data) {
 			//_.where(data.layers, { type:"objectgroup"});
 		});

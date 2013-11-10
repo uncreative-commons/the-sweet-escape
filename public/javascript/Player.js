@@ -104,15 +104,17 @@ Player = function (game, x, y, type, own) {
 	switch(type) {
 
 		case "Boogie":
-			self.body.offset.x = 8;
-			self.body.offset.y = 36;
-			self.body.width = 130;
-			self.body.height = 160;
+			self.body.offset.x = 18;
+			self.body.offset.y = 0;
+			self.body.width = 80;
+			self.body.height = 150;
 
 			self.animations.add('idle_right', [1]);
 			self.animations.add('idle_left', [4]);
 			self.animations.add('right', [0,1,0,2], 8, true);
 			self.animations.add('left', [3,4,3,5], 8, true);
+			self.animations.add('jump_right', [6]);
+			self.animations.add('jump_left', [7]);
 			break;
 
 		case "Pop":
@@ -131,8 +133,8 @@ Player = function (game, x, y, type, own) {
 
 			self.animations.add('jump_right_steady', [7], 1, true);
 			self.animations.add('jump_left_steady', [10], 1, true);
-			self.animations.add('fall_right', [8], 1, true);
-			self.animations.add('fall_left', [11], 1, true);
+			self.animations.add('fall_right', [8]);
+			self.animations.add('fall_left', [11]);
 			break;
 	}
 };
