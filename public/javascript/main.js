@@ -52,6 +52,7 @@ var candies = {
 	floor: {},
 	teleports:{},
 	targets:{},
+	buttons:{},
 	levels: ["escape", "waterkills", "teleport", "combitronics", "cojump", "fires", "party"],
 
 	preinit: function(container) {
@@ -72,19 +73,28 @@ var candies = {
 		var self=this;
 		if(self.enabled){
 			for(var i in self.enabled){
-				if(self.teleports[i])
-					self.teleports[i].enabled = self.enabled[i];
-			};
+				if(self.buttons[i]){
+					var marker = self.buttons[i];
+					marker.enabled = self.enabled[i];
+					marker.animations.play(marker.enabled ? 'on' : 'off')
+					if(self.targets[marker.target]){
+						var m = self.teleports[marker.target];
+						if(m){
+							m.enabled = m.enabled ? false:true;
+						}
+						self.checkTeleports();
+					}
+				}
+				
+		    };
 			self.enabled=false;
 		}
 		
 	},
 	checkTeleports:function(){
 		var self = this;
-		var a=[];
 		for(var i in this.teleports){
 			var m = this.teleports[i];
-			a.push(m.enabled);
 			if(!m.emmiter){
 				m.emmiter = self.game.particles.add(new Phaser.Particles.Arcade.Emitter(self.game, 20, 20, 50));
 				m.emmiter.makeParticles(m.markerName == "teleport" ? "stars":"fire");
@@ -102,7 +112,6 @@ var candies = {
 				m.emmiter.kill();
 			}
 		}
-		self.socket.emit("enabled",a);
 	},
 	preload: function() {
 		var self = this;
@@ -214,6 +223,9 @@ var candies = {
 							}
 							if(a[0] == "target" && a[1]){
 								self.targets[a[1]] = m;
+							}
+							if(a[0] == "button" && a[1]){
+								self.buttons[a[1]] = m;
 							}
 						}
 					}
