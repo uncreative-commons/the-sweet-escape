@@ -9,7 +9,7 @@
 
 function other_room(df) {
 	var id = candies.levels[candies.levels.indexOf(room_getId()) + df];
-	return  document.location.href.split("?")[0] + "?" + id + "?" + candies.players[candies.myId].playerType + "?0";
+	return  document.location.href.split("?")[0] + "?" + id + "?" + candies.players[candies.myId].playerType + "?" + (df>0 ? 0 : 1);
 }
 
 function room_firstRun() {
@@ -25,7 +25,7 @@ function room_getChar() {
 }
 
 function room_getSpawnPos() {
-	return parseInt(document.location.href.split("?")[3]) || 0;
+	return parseInt(document.location.href.split("?")[3]);
 }
 
 //http://192.168.2.64
@@ -180,10 +180,12 @@ var candies = {
 			self.myId = id;
 			console.log("i am", self.myId);
 
+			var first = room_firstRun();
 			var begg = !room_getSpawnPos();
+
 			var pos = begg ? 100 : (self.tileLayer.width-300);
 
-			var datum = {x: pos , y: 300, type: room_getChar() || _.sample(["Boogie", "Pop"])};
+			var datum = {x: pos , y: first?30:300, type: room_getChar() || _.sample(["Boogie", "Pop"])};
 
 			var player = self.players[id] = new Player(self.game, datum.x, datum.y, datum.type, true);
 
