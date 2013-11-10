@@ -88,7 +88,7 @@ var CandyConvicts = {
 		
     	self.game.load.tileset('tiles', 'tilemaps/tileset.png', 64, 64);
     	// self.game.load.audio('music', 'audio/two.mp3');
-    	self.game.load.audio('music', ['audio/Dig_Up_Her_Bones.mp3']);
+    	//self.game.load.audio('music', ['audio/Dig_Up_Her_Bones.mp3']);
 
 	},
 
@@ -109,8 +109,10 @@ var CandyConvicts = {
 		self.tileLayer.fixedToCamera = false;
 		self.tileLayer.resizeWorld();
 
-		self.music = self.game.add.audio('music');
-	    self.music.play();
+		/*
+			self.music = self.game.add.audio('music');
+	    	self.music.play();
+	    */
 
 		self.cursors = self.game.input.keyboard.createCursorKeys();
 		self.jumpButton = self.game.input.keyboard.addKey(Phaser.Keyboard.X);
@@ -255,12 +257,12 @@ var CandyConvicts = {
 					if (player.playerType === "Pop")
 						player.animations.play((player.facing == Phaser.RIGHT) ? 'jump_right' : 'jump_left');
 				} 
-
-				var datum = {x: player.x | 0, y: player.y | 0, animation: player.animations.currentAnim.name, type: player.playerType};
-				if (!_.isEqual(datum, self.old_emit))
-					self.socket.emit("change", datum);
-				self.old_emit = datum;
 			}
+
+			var datum = {x: player.x | 0, y: player.y | 0, animation: player.animations.currentAnim.name, type: player.playerType};
+			if (!_.isEqual(datum, self.old_emit))
+				self.socket.emit("change", datum);
+			self.old_emit = datum;
 		}
 
 	},
