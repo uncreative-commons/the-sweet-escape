@@ -41,6 +41,8 @@ var CandyConvicts = {
 	cursors: {},
 	markers:[],
 	floor: {},
+	teleport:false,
+	target:false,
 
 	preinit: function(container) {
 
@@ -66,7 +68,12 @@ var CandyConvicts = {
 				if(dl.objects){
 					for(var j=0;j!= dl.objects.length;j++){
 						var ttt = dl.objects[j];
-						self.markers.push(new Marker(self.game,ttt.x,ttt.y,ttt.width,ttt.height,ttt.name));
+						var a = ttt.name.split("#");
+						var m = new Marker(self.game,ttt.x,ttt.y,ttt.width,ttt.height,a[0],a[1]);
+						self.markers.push(m);
+						if(a[0] == "teleport") self.teleport = m;
+						if(a[0] == "target") self.target = m;
+						
 					}
 				}
 			}
@@ -185,7 +192,7 @@ var CandyConvicts = {
 		socket.on('behavior', function (data) {
 			var player = self.players[data.id];
 			if (player) {
-				Behaviors[data.name](self.game,data.marker,player,data.arg);
+				Behaviors[data.name](self.game,data.marker,player);
 		    }
 		});
 		
@@ -232,8 +239,8 @@ var CandyConvicts = {
 					self.game.physics.collide(v, player,function(){
 						var a = v.markerName.split("#");
 						if(Behaviors[v.markerName]){
-							Behaviors[a[0]](self.game,v,player,a[1]);
-							self.socket.emit("behavior",{name:a[0],id:self.myId,marker:{x:v.x,y:v.y,width:v.width,height:v.height},arg:a[1]});
+							Behaviors[v.markerName](self.game,v,player);
+							self.socket.emit("behavior",{name:a[0],id:self.myId,marker:{x:v.x,y:v.y,width:v.width,height:v.height}});
 						}
 					});
 				});

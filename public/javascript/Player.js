@@ -4,15 +4,25 @@ Behaviors = {
 		player.dead = true;
 	},
 	"button": function(world,marker,player,arg){
+		
+	},
+	"teleport": function(world,marker,player,arg){
+		if(world.target){
+			particleStars(player.x,player.y);
+			player.x = world.target.x;
+			player.y = world.target.y;
+			particleStars(player.x,player.y);
+		}
 	},
 	"next": function(world,marker,player,arg){
-		console.log("OMG WATER!!! NOOOOOOOOOOOOOOOOO")
+		console.log("OMG WATER!!! NOOOOOOOOOOOOOOOOO");
 	}
 }
 
-Marker = function (game, x, y, width,height,name){
+Marker = function (game, x, y, width,height,name,extra){
 	Phaser.Sprite.call(this, game, x, y,"Boogie");
 	this.markerName = name;
+	this.extra = extra;
 	this.body.x = x;
 	this.body.y = y;
 	this.body.customSeparateX = true;
