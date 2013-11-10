@@ -6,6 +6,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 var COUNT=0;
+touches = {};
 
 function other_room(df) {
 	var id = candies.levels[candies.levels.indexOf(room_getId()) + df];
@@ -291,7 +292,7 @@ var candies = {
 		var self = this;
 		self.background.x = Math.max(0,self.game.camera.x/2);
 		
-		var jump_button = (self.jumpButton.isDown || self.cursors.up.isDown);
+		var jump_button = (self.jumpButton.isDown || self.cursors.up.isDown) | touches["jump"];
 
 		if (!self.socket && jump_button)
 			self.login();
@@ -332,8 +333,8 @@ var candies = {
 					});
 				});
 
-				if (self.cursors.right.isDown || self.cursors.left.isDown) {
-					player.facing = (self.cursors.left.isDown) ? Phaser.LEFT : Phaser.RIGHT;
+				if (self.cursors.right.isDown || self.cursors.left.isDown || touches["left"] || touches["right"]) {
+					player.facing = (self.cursors.left.isDown | touches["left"]) ? Phaser.LEFT : Phaser.RIGHT;
 					player.body.velocity.x = (player.facing == Phaser.LEFT) ? -player.movementSpeed : player.movementSpeed;
 					player.animations.play((player.facing == Phaser.RIGHT) ? 'right' : 'left');
 
