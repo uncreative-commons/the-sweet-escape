@@ -1,12 +1,17 @@
 Behaviors = {
 	"water": function(world,marker,player,arg){
 		particleSplash(player.x+50,player.y+100);
-		player.dead = true;
+		if (player.own) {
+			player.dead = true;
+			player.body.collideWorldBounds = false;
+		}
 	},
 	"button": function(world,marker,player,arg){
 	},
 	"next": function(world,marker,player,arg){
-		console.log("OMG WATER!!! NOOOOOOOOOOOOOOOOO")
+		if (player.own) {
+			console.log("OMG WATER!!! NOOOOOOOOOOOOOOOOO")
+		}
 	}
 }
 
