@@ -65,10 +65,10 @@ io.sockets.on('connection', function (socket) {
   var room = Rooms[roomId];
   var sid = socket.id;
   room.clients[sid]={};
-  socket.emit('whoami', sid);
   socket.emit('objects', room.objects);
   socket.emit('enabled', room.enabled);
   socket.emit('state', room.clients);
+  socket.emit('whoami', sid);
   
   socket.on('change', function (data) {
 	var t = {};
@@ -108,8 +108,12 @@ io.sockets.on('connection', function (socket) {
   
   socket.on('disconnect', function (data) {
     delete room.clients[sid];
+    var count = 0;
     for(i in room.clients){
+		count ++;
 		io.sockets.socket(i).emit("remove",sid);
 	}
+    if (count == 0)
+	delete Rooms[roomId];
   });
 });
