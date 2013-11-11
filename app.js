@@ -102,8 +102,9 @@ io.sockets.on('connection', function (socket) {
   });
   socket.on('enabled', function (data) {
 	  for(var i in data){
-		room.enabled[i] = data[i];
+		  room.enabled[i] = data[i];
 	  }
+    socket.emit('enabled', room.enabled);
   });
   
   socket.on('disconnect', function (data) {

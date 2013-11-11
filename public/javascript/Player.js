@@ -6,6 +6,7 @@ Behaviors = {
 			player.die();
 		}
 	},
+	
 	"fire": function(world,marker,player,arg){
 		if(!marker.enabled) return;
 		particleBurn(player.x+50,player.y+100);
@@ -13,20 +14,15 @@ Behaviors = {
 			player.die();
 		}
 	},
+
 	"button": function(world,marker,player,arg){
 		if(marker.count && COUNT - marker.count < 2) return;
 		if (!marker.animations)
 			marker = world.buttons[_.first(_.keys(world.buttons))];
 		marker.count = COUNT;
-		marker.enabled = marker.enabled ? false:true;
-		marker.animations.play(marker.enabled ? 'on' : 'off')
-			var m = world.teleports[marker.target];
-			if(m){
-				m.enabled = m.enabled ? false:true;
-			}
-			world.checkTeleports();
+		
 		var s = {};
-		s[marker.target] = world.teleports[marker.target].enabled;
+		s[marker.target] = !marker.enabled;
 		world.socket.emit("enabled",s);
 	},
 	
@@ -72,7 +68,8 @@ Behaviors = {
 			}, secs*1000);
 		}
 	},
-}
+},
+
 
 Marker = function (game, x, y, width,height,name,target,enabled){
 	Phaser.Sprite.call(this, game, x, y,"Button");

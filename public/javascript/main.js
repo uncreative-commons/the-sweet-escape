@@ -107,16 +107,19 @@ var candies = {
 				m.emmiter.minParticleSpeed = new Phaser.Point(-100, -100);
 				m.emmiter.setXSpeed(-2, 2);
 			}
+			m.emmiter.kill();
 			if(m.enabled){
 				m.emmiter.start(false,2000,null,1000+parseInt(Math.random()*5));
-			}else{
-				m.emmiter.kill();
 			}
 		}
 	},
 	preload: function() {
 		var self = this;
 		console.log("### PRELOADING..");
+
+		$.getJSON('tilemaps/' + room_getId() + '.json',function(data) {
+			self.tilemapData = data;
+		});
 
 		self.game.load.image('TestBackground', 'images/background-' + room_getId() + '.jpg');
 		self.game.load.spritesheet('Pop', 'images/PopSprite.png', 195, 200);
@@ -144,8 +147,6 @@ var candies = {
 	create: function() {
 		var self = this;
 		
-		
-		
 		console.log("### GAME CREATED!");
 
 		$("#loading").hide();
@@ -169,10 +170,34 @@ var candies = {
 	
 		self.jumpFX = self.game.add.audio('jump');
 		self.deathFX = self.game.add.audio('death');
-    
+		self.music = self.game.add.audio('music');
+
 		if (!room_firstRun())
 			self.login();
 
+		(function(data){
+			for(var i=0;i!= data.layers.length;i++){
+				var dl = data.layers[i];
+				if(dl.objects){
+					for(var j=0;j!= dl.objects.length;j++){
+						var ttt = dl.objects[j];
+						var a = ttt.name.split("#");
+						var m = new Marker(self.game,ttt.x,ttt.y,ttt.width,ttt.height,a[0],a[1],a[0].match("!") ? false:true);
+						self.markers.push(m);
+						a[0] = a[0].replace("!","");
+						if(a[0] == "teleport" || a[0] == "fire"){
+							self.teleports[a[1]] = m;
+						}
+						if(a[0] == "target" && a[1]){
+							self.targets[a[1]] = m;
+						}
+						if(a[0] == "button" && a[1]){
+							self.buttons[a[1]] = m;
+						}
+					}
+				}
+			}
+		})(self.tilemapData);
 	},
 
 
@@ -181,9 +206,7 @@ var candies = {
 
 		var socket = self.socket = io.connect(room_url());
 
-		self.music = self.game.add.audio('music');
-		self.music.volume=0.1;
-	    	self.music.play('', 0, 1, true);
+	    self.music.play('', 0, 0.1, true);
 
 		socket.on('whoami', function (id) {
 			self.myId = id;
@@ -213,32 +236,8 @@ var candies = {
 			//handle stuff here
 			console.log(data);
 			self.enabled = data;
-			$.getJSON('tilemaps/' + room_getId() + '.json',function(data){
-				for(var i=0;i!= data.layers.length;i++){
-					var dl = data.layers[i];
-					if(dl.objects){
-						for(var j=0;j!= dl.objects.length;j++){
-							var ttt = dl.objects[j];
-							var a = ttt.name.split("#");
-							var m = new Marker(self.game,ttt.x,ttt.y,ttt.width,ttt.height,a[0],a[1],a[0].match("!") ? false:true);
-							self.markers.push(m);
-							a[0] = a[0].replace("!","");
-							if(a[0] == "teleport" || a[0] == "fire"){
-								self.teleports[a[1]] = m;
-							}
-							if(a[0] == "target" && a[1]){
-								self.targets[a[1]] = m;
-							}
-							if(a[0] == "button" && a[1]){
-								self.buttons[a[1]] = m;
-							}
-						}
-					}
-				}
-				self.checkEnabled();
-				self.checkTeleports();
-		
-			})
+			self.checkEnabled();
+			self.checkTeleports();
 		});
   
 		socket.on('state', function (data) {
@@ -283,8 +282,10 @@ var candies = {
 
 		socket.on('behavior', function (data) {
 			var player = self.players[data.id];
-			if (player) {
-				Behaviors[data.name](self,data.marker,player);
+			if (player && !player.own) {
+				var marker = _.first(_.where(self.markers, {markerName: data.name}));
+
+				Behaviors[data.name](self, marker, player, data);
 		    }
 		});
 	},
@@ -330,7 +331,7 @@ var candies = {
 						var a = v.markerName.split("#");
 						if(Behaviors[v.markerName]){
 							Behaviors[v.markerName](self,v,player);
-							self.socket.emit("behavior",{name:a[0],id:self.myId,marker:{x:v.x,y:v.y,width:v.width,height:v.height}});
+							self.socket.emit("behavior",{name:v.markerName,id:self.myId,marker:{x:v.x,y:v.y,width:v.width,height:v.height}});
 						}
 					});
 				});
