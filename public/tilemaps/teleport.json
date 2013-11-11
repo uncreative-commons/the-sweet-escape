@@ -94,7 +94,7 @@
                  "y":85
                 }, 
                 {
-                 "height":32,
+                 "height":108,
                  "name":"teleport#t1",
                  "properties":
                     {
@@ -102,9 +102,9 @@
                     },
                  "type":"",
                  "visible":true,
-                 "width":47,
-                 "x":1324,
-                 "y":520
+                 "width":52,
+                 "x":1223,
+                 "y":453
                 }, 
                 {
                  "height":78,
