@@ -78,7 +78,7 @@ var candies = {
 					var marker = self.buttons[i];
 					marker.enabled = self.enabled[i];
 					marker.animations.play(marker.enabled ? 'on' : 'off')
-					if(self.targets[marker.target]){
+					if(self.teleports[marker.target]){
 						var m = self.teleports[marker.target];
 						if(m){
 							m.enabled = m.enabled ? false:true;
