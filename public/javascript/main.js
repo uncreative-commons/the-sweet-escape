@@ -169,8 +169,6 @@ var candies = {
 	
 		self.jumpFX = self.game.add.audio('jump');
 		self.deathFX = self.game.add.audio('death');
-		self.music = self.game.add.audio('music');
-    	self.music.play('', 0, 1, true);
     
 		if (!room_firstRun())
 			self.login();
@@ -182,6 +180,10 @@ var candies = {
 		var self = this;
 
 		var socket = self.socket = io.connect(room_url());
+
+		self.music = self.game.add.audio('music');
+		self.music.volume=0.1;
+	    	self.music.play('', 0, 1, true);
 
 		socket.on('whoami', function (id) {
 			self.myId = id;
