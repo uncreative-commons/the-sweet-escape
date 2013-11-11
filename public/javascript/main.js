@@ -81,7 +81,7 @@ var candies = {
 					if(self.teleports[marker.target]){
 						var m = self.teleports[marker.target];
 						if(m){
-							m.enabled = m.enabled ? false:true;
+							m.enabled = marker.enabled;
 						}
 						self.checkTeleports();
 					}
@@ -182,17 +182,22 @@ var candies = {
 					for(var j=0;j!= dl.objects.length;j++){
 						var ttt = dl.objects[j];
 						var a = ttt.name.split("#");
-						var m = new Marker(self.game,ttt.x,ttt.y,ttt.width,ttt.height,a[0],a[1],a[0].match("!") ? false:true);
+						var initial = a[0].match("!") ? false : true;
+						var type = a[0].replace("!","");
+						var id = a[1];
+						var m = new Marker(self.game,ttt.x,ttt.y,ttt.width,ttt.height,type,id, initial);
 						self.markers.push(m);
-						a[0] = a[0].replace("!","");
-						if(a[0] == "teleport" || a[0] == "fire"){
-							self.teleports[a[1]] = m;
-						}
-						if(a[0] == "target" && a[1]){
-							self.targets[a[1]] = m;
-						}
-						if(a[0] == "button" && a[1]){
-							self.buttons[a[1]] = m;
+						switch(type) {
+							case "teleport":
+							case "fire":
+								self.teleports[id] = m;
+								break;
+							case "target":
+								self.targets[id] = m;
+								break;
+							case "button":
+								self.buttons[id] = m;
+								break;
 						}
 					}
 				}

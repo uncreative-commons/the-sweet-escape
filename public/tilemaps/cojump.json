@@ -43,7 +43,7 @@
                 }, 
                 {
                  "height":74,
-                 "name":"button#t1",
+                 "name":"!button#t1",
                  "properties":
                     {
 
@@ -69,7 +69,7 @@
                 }, 
                 {
                  "height":91,
-                 "name":"teleport#t1",
+                 "name":"!teleport#t1",
                  "properties":
                     {
 
