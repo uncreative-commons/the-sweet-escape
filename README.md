@@ -7,7 +7,7 @@ phaser.js for rendering. Tilemaps edited with tiled, artwork mostly created in P
 
 The general gameplay idea is cooperative platformer/puzzle solving with friends or other internet anons.
 
-It is running live @ http://uncreative.korny.cc
+It is running live @ http://vast-harbor-1696.herokuapp.com
 
 Mobile devices are also supported, but there might be some scaling issues.
 
