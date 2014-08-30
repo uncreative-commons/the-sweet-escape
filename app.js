@@ -76,14 +76,14 @@ io.sockets.on('connection', function (socket) {
 	room.clients[sid] = data;
 	for(i in room.clients){
 		if(i!=sid){
-			io.sockets.socket(i).emit("state",t);
+			io.to(i).emit("state",t);
 	    }
 	}
   });
   socket.on('behavior', function (data) {
 	for(i in room.clients){
 		if(i!=sid){
-			io.sockets.socket(i).emit("behavior",data);
+			io.to(i).emit("behavior",data);
 	    }
 	}
   });
@@ -96,7 +96,7 @@ io.sockets.on('connection', function (socket) {
 	}
 	for(var i in room.clients){
 		if(i!=sid){
-			io.sockets.socket(i).emit("objects",t);
+			io.to(i).emit("objects",t);
 	    }
 	}
   });
@@ -112,7 +112,7 @@ io.sockets.on('connection', function (socket) {
     var count = 0;
     for(i in room.clients){
 		count ++;
-		io.sockets.socket(i).emit("remove",sid);
+		io.to(i).emit("remove",sid);
 	}
     if (count == 0)
 	delete Rooms[roomId];
