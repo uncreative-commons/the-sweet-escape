@@ -18,9 +18,9 @@ Assuming you have node.js installed, npm install && npm start should fetch all d
 
 Code structure
 --------------
-Backend / persist logic at [ app.js ](app.js)
+Backend / persist logic -> [ app.js ](app.js)
 
-Game logic mostly at the [public/javascript/*](public/javascript/) folder
+Game logic -> [public/javascript/*](public/javascript/)
 
 Team
 ====
