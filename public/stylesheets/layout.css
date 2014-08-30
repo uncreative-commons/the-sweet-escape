@@ -121,7 +121,7 @@ footer a#uc_logo {
 }
 
 #loading {
-	background: url('logo.jpg') center center;
+	background: url('/logo.jpg') center center;
 	background-size: cover;
 }
 
